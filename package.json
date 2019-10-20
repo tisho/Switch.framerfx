@@ -1,0 +1,16 @@
+{
+	"main": "dist/index.js",
+	"license": "MIT",
+	"devDependencies": {
+		"@types/react": "^16.8"
+	},
+	"peerDependencies": {
+		"framer": "^1.0",
+		"react": "^16.8"
+	},
+	"framer": {
+		"id": "ed23e452-a6a0-4923-b8d0-b11df262bfbc"
+	},
+	"author": "Tisho Georgiev",
+	"dependencies": {}
+}
