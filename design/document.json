@@ -4037,13 +4037,13 @@
             "originalid" : null,
             "parentid" : "Y9IhOUA4r",
             "previewSettings" : null,
-            "radius" : 100,
-            "radiusBottomLeft" : 100,
-            "radiusBottomRight" : 100,
+            "radius" : 0,
+            "radiusBottomLeft" : 0,
+            "radiusBottomRight" : 0,
             "radiusIsRelative" : false,
             "radiusPerCorner" : false,
-            "radiusTopLeft" : 100,
-            "radiusTopRight" : 100,
+            "radiusTopLeft" : 0,
+            "radiusTopRight" : 0,
             "replicaInfo" : null,
             "right" : 0,
             "rotation" : 0,
@@ -4058,7 +4058,14 @@
         "constraintsLocked" : false,
         "deviceType" : null,
         "exportOptions" : [
-
+          {
+            "__class" : "ExportOptions",
+            "enabled" : true,
+            "nameExtension" : "",
+            "nameExtensionMode" : "Suffix",
+            "scale" : 1,
+            "type" : "png"
+          }
         ],
         "fillColor" : "rgba(255, 136, 170, 1.00)",
         "fillEnabled" : false,
@@ -5030,7 +5037,14 @@
         "constraintsLocked" : false,
         "deviceType" : null,
         "exportOptions" : [
-
+          {
+            "__class" : "ExportOptions",
+            "enabled" : true,
+            "nameExtension" : "",
+            "nameExtensionMode" : "Suffix",
+            "scale" : 1,
+            "type" : "png"
+          }
         ],
         "fillColor" : "rgba(255, 136, 170, 1.00)",
         "fillEnabled" : true,

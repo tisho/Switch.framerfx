@@ -4,6 +4,7 @@ import { Frame, addPropertyControls, ControlType, RenderTarget } from "framer"
 import { useStore } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
+import { colors as thumbnailColors } from "./thumbnailStyles"
 
 export function handleTrigger(store, setStore, target, action, targetState) {
     if (target === "") return
@@ -29,6 +30,8 @@ export function handleTrigger(store, setStore, target, action, targetState) {
     setStore(store)
 }
 
+// ------------- SwitchToStateAction Component ------------
+
 export function SwitchToStateAction(props) {
     const {
         children,
@@ -40,6 +43,10 @@ export function SwitchToStateAction(props) {
     } = props
     const sanitizedTarget = sanitizePropName(target)
     const [store, setStore] = useStore()
+
+    if (RenderTarget.current() === RenderTarget.thumbnail) {
+        return <SwitchToStateActionThumbnail />
+    }
 
     const onTrigger = () => {
         handleTrigger(store, setStore, sanitizedTarget, actionType, targetState)
@@ -78,6 +85,8 @@ SwitchToStateAction.defaultProps = {
     target: "sharedSwitch",
 }
 
+// ------------------- Property Controls ------------------
+
 addPropertyControls(SwitchToStateAction, {
     children: {
         type: ControlType.ComponentInstance,
@@ -115,3 +124,23 @@ addPropertyControls(SwitchToStateAction, {
         hidden: props => props.actionType !== "specific",
     },
 })
+
+// ---------------------- Thumbnail -----------------------
+
+function SwitchToStateActionThumbnail() {
+    return (
+        <Frame
+            size="100%"
+            borderRadius={8}
+            border={`2px solid ${thumbnailColors.primary}`}
+            background={thumbnailColors.background}
+        >
+            <Frame
+                borderRadius="50%"
+                size="55%"
+                center
+                background={thumbnailColors.primary}
+            ></Frame>
+        </Frame>
+    )
+}

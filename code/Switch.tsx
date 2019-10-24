@@ -13,6 +13,7 @@ import { sanitizePropName } from "./sanitizePropName"
 import { TRANSITIONS, DEFAULT_TWEEN, DEFAULT_SPRING } from "./transitions"
 import { handleTrigger } from "./SwitchToStateAction"
 import { omit } from "./omit"
+import { colors as thumbnailColors } from "./thumbnailStyles"
 
 const eventTriggerNames = [
     "onTap",
@@ -41,6 +42,11 @@ export function Switch(props) {
         isInteractive,
         ...rest
     } = props
+
+    if (RenderTarget.current() === RenderTarget.thumbnail) {
+        return <SwitchThumbnail />
+    }
+
     const [store, setStore] = useStore()
     const states = React.Children.toArray(children).map(c => c.props.name)
     const sanitizedIdentifier = sanitizePropName(identifier)
@@ -512,3 +518,52 @@ addPropertyControls(Switch, {
         defaultValue: "0.25, 0.1, 0.25, 1",
     },
 })
+
+// ---------------------- Thumbnail -----------------------
+
+function SwitchThumbnail() {
+    return (
+        <Frame
+            size="100%"
+            borderRadius={32}
+            border={`10px solid ${thumbnailColors.primary}`}
+            background={thumbnailColors.background}
+        >
+            <Frame size={60} center scale={8} background="transparent">
+                <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60">
+                    <path
+                        d="M 20.593 28.22 C 20.593 27.799 20.935 27.458 21.356 27.458 L 24.915 27.458 C 25.336 27.458 25.678 27.799 25.678 28.22 L 25.678 31.78 C 25.678 32.201 25.336 32.542 24.915 32.542 L 21.356 32.542 C 20.935 32.542 20.593 32.201 20.593 31.78 Z"
+                        fill="rgba(237, 123, 182, 1.00)"
+                        stroke="rgba(237, 123, 182, 1.00)"
+                    ></path>
+                    <path
+                        d="M 33.305 21.862 C 33.305 21.442 33.645 21.102 34.065 21.102 L 37.63 21.102 C 38.05 21.102 38.39 21.442 38.39 21.862 L 38.39 25.426 C 38.39 25.846 38.05 26.186 37.63 26.186 L 34.065 26.186 C 33.645 26.186 33.305 25.846 33.305 25.426 Z"
+                        fill="rgba(237, 123, 182, 1.00)"
+                        stroke="rgba(237, 123, 182, 1.00)"
+                    ></path>
+                    <path
+                        d="M 33.305 36.61 C 33.305 35.066 34.557 33.814 36.102 33.814 L 36.102 33.814 C 37.646 33.814 38.898 35.066 38.898 36.61 L 38.898 36.61 C 38.898 38.155 37.646 39.407 36.102 39.407 L 36.102 39.407 C 34.557 39.407 33.305 38.155 33.305 36.61 Z"
+                        fill="rgba(237, 123, 182, 1.00)"
+                        stroke="rgba(237, 123, 182, 1.00)"
+                    ></path>
+                    <path
+                        d="M 26.695 30 C 26.695 30 29.492 30.064 29.492 27.203 C 29.492 24.343 31.78 23.771 31.78 23.771"
+                        fill="transparent"
+                        stroke-width="0.76"
+                        stroke="rgba(237, 123, 182, 1.00)"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                    <path
+                        d="M 26.695 30.127 C 26.695 30.127 29.492 30.064 29.492 32.924 C 29.492 35.784 31.78 36.356 31.78 36.356"
+                        fill="transparent"
+                        stroke-width="0.76"
+                        stroke="rgba(237, 123, 182, 1.00)"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                    ></path>
+                </svg>
+            </Frame>
+        </Frame>
+    )
+}
