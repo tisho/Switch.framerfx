@@ -2,11 +2,11 @@
 
 `Switch` is a utility component that lets you switch between different states of an element on the canvas using animated transitions. It comes with an additional `SwitchToStateAction` component, which acts as a hotspot that can change the current state of a `Switch` without writing any code.
 
-**[View documentation on GitHub](https://github.com/tisho/Switch.framerfx)**
+**[→ View documentation on GitHub](https://github.com/tisho/Switch.framerfx)**
 
 # Examples
 
-[Download all examples (.framerx file)]()
+**[→ Download all examples (.framerx file)](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-examples.framerx)**
 
 ## Bottom Sheet
 
@@ -98,3 +98,8 @@ Controlled Switches rely on other elements to set their state. Here are a few us
 <img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-6.png" width="227">
 
 7. Preview your prototype.
+
+# Get In Touch
+
+-   **@tisho** on Twitter
+-   **@tisho** on the [Framer Slack](https://www.framer.com/community/)

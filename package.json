@@ -10,8 +10,11 @@
 		"react": "^16.8"
 	},
 	"framer": {
-		"id": "ed23e452-a6a0-4923-b8d0-b11df262bfbc"
+		"id": "ed23e452-a6a0-4923-b8d0-b11df262bfbc",
+		"displayName": "Switch"
 	},
 	"author": "Tisho Georgiev",
-	"dependencies": {}
+	"dependencies": {},
+	"name": "@framer/tishogeorgiev.switch",
+	"version": "1.0.0"
 }
