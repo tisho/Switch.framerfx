@@ -2,6 +2,7 @@
 	"main": "dist/index.js",
 	"license": "MIT",
 	"devDependencies": {
+		"@framer/framer.device-skin-apple-iphone-xs-spacegrey": "^1.0.0",
 		"@types/react": "^16.8"
 	},
 	"peerDependencies": {

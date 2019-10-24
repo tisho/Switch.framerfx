@@ -2,6 +2,11 @@
 # yarn lockfile v1
 
 
+"@framer/framer.device-skin-apple-iphone-xs-spacegrey@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.framer.com/@framer/framer.device-skin-apple-iphone-xs-spacegrey/-/@framer/framer.device-skin-apple-iphone-xs-spacegrey-1.0.0.tgz#d9f524f5a6a4afe8cb413c00f3f16fe4d52ee09e"
+  integrity sha512-BWmGnCvnPmYel3ytJ1eiNxugHTj3e7eiih8L1b3RZtB4ZjgF6HiCMp+nsB0wAOJrMS2sA+fEYMDzxqybX9Dukg==
+
 "@types/prop-types@*":
   version "15.7.0"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.0.tgz#4c48fed958d6dcf9487195a0ef6456d5f6e0163a"

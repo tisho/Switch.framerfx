@@ -11,6 +11,23 @@ import { useStore } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
 import { TRANSITIONS, DEFAULT_TWEEN, DEFAULT_SPRING } from "./transitions"
+import { handleTrigger } from "./SwitchToStateAction"
+import { omit } from "./omit"
+
+const eventTriggerNames = [
+    "onTap",
+    "onTapStart",
+    "onTapCancel",
+    "onHoverStart",
+    "onHoverEnd",
+    "onDragStart",
+    "onDragEnd",
+]
+
+const eventTriggerProps = [
+    ...eventTriggerNames,
+    ...eventTriggerNames.map(name => `${name}SpecificIndex`),
+]
 
 // ------------------- Switch Component -------------------
 
@@ -21,6 +38,7 @@ export function Switch(props) {
         transition = "instant",
         overflow = true,
         initialState = 0,
+        isInteractive,
         ...rest
     } = props
     const [store, setStore] = useStore()
@@ -82,9 +100,29 @@ export function Switch(props) {
         ...TRANSITIONS[transition](child.props, props, direction),
     })
 
+    // Extract event handlers from props
+    let eventHandlers = {}
+    if (isInteractive) {
+        eventHandlers = eventTriggerNames.reduce((handlers, event) => {
+            const action = props[event]
+            if (action !== "unset") {
+                handlers[event] = () =>
+                    handleTrigger(
+                        store,
+                        setStore,
+                        sanitizedIdentifier,
+                        action,
+                        props[`${event}SpecificIndex`]
+                    )
+            }
+            return handlers
+        }, {})
+    }
+
     return (
         <Frame
-            {...rest}
+            {...eventHandlers}
+            {...omit(rest, eventTriggerProps)}
             background="transparent"
             size="100%"
             overflow={overflow ? "visible" : "hidden"}
@@ -136,6 +174,172 @@ addPropertyControls(Switch, {
         displayStepper: true,
         defaultValue: 0,
     },
+
+    // Event Handling
+
+    isInteractive: {
+        title: "Interactive",
+        type: ControlType.Boolean,
+        enabledTitle: "Yes",
+        disabledTitle: "No",
+        defaultValue: false,
+    },
+
+    onTap: {
+        title: "On Tap",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onTapSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onTap !== "specific",
+    },
+
+    onTapStart: {
+        title: "Tap Start",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onTapStartSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onTapStart !== "specific",
+    },
+
+    onTapCancel: {
+        title: "Tap Cancel",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onTapCancelSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onTapCancel !== "specific",
+    },
+
+    onHoverStart: {
+        title: "Hover Start",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onHoverStartSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onHoverStart !== "specific",
+    },
+
+    onHoverEnd: {
+        title: "Hover End",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onHoverEndSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onHoverEnd !== "specific",
+    },
+
+    onDragStart: {
+        title: "Drag Start",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onDragStartSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onDragStart !== "specific",
+    },
+
+    onDragEnd: {
+        title: "Drag End",
+        type: ControlType.Enum,
+        options: ["unset", "specific", "previous", "next"],
+        optionTitles: [
+            "Not Set",
+            "Specific State",
+            "Previous State",
+            "Next State",
+        ],
+        hidden: props => props.isInteractive === false,
+    },
+
+    onDragEndSpecificIndex: {
+        title: " ",
+        type: ControlType.Number,
+        displayStepper: true,
+        defaultValue: 0,
+        hidden: props =>
+            props.isInteractive === false || props.onDragEnd !== "specific",
+    },
+
+    // Transition Options
 
     transition: {
         title: "Transition",

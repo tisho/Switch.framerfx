@@ -5,6 +5,30 @@ import { useStore } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
 
+export function handleTrigger(store, setStore, target, action, targetState) {
+    if (target === "") return
+
+    const current = store[target]
+    const states =
+        store.__registry && store.__registry[target]
+            ? store.__registry[target]
+            : []
+
+    if (action === "specific") {
+        store[target] = targetState
+    }
+
+    if (action === "next") {
+        store[target] = current + 1 >= states.length ? 0 : current + 1
+    }
+
+    if (action === "previous") {
+        store[target] = current - 1 < 0 ? states.length - 1 : current - 1
+    }
+
+    setStore(store)
+}
+
 export function SwitchToStateAction(props) {
     const {
         children,
@@ -18,29 +42,7 @@ export function SwitchToStateAction(props) {
     const [store, setStore] = useStore()
 
     const onTrigger = () => {
-        if (sanitizedTarget === "") return
-
-        const current = store[sanitizedTarget]
-        const states =
-            store.__registry && store.__registry[sanitizedTarget]
-                ? store.__registry[sanitizedTarget]
-                : []
-
-        if (actionType === "specific") {
-            store[sanitizedTarget] = targetState
-        }
-
-        if (actionType === "next") {
-            store[sanitizedTarget] =
-                current + 1 >= states.length ? 0 : current + 1
-        }
-
-        if (actionType === "previous") {
-            store[sanitizedTarget] =
-                current - 1 < 0 ? states.length - 1 : current - 1
-        }
-
-        setStore(store)
+        handleTrigger(store, setStore, sanitizedTarget, actionType, targetState)
     }
 
     const events = { [trigger]: onTrigger }
