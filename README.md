@@ -2,6 +2,8 @@
 
 `Switch` is a utility component that lets you switch between different states of an element on the canvas using animated transitions. It comes with an additional `SwitchToStateAction` component, which acts as a hotspot that can change the current state of a `Switch` without writing any code.
 
+**[View documentation on GitHub](https://github.com/tisho/Switch.framerfx)**
+
 # Examples
 
 [Download all examples (.framerx file)]()

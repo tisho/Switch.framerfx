@@ -4061,9 +4061,9 @@
           {
             "__class" : "ExportOptions",
             "enabled" : true,
-            "nameExtension" : "",
+            "nameExtension" : "@2x",
             "nameExtensionMode" : "Suffix",
-            "scale" : 1,
+            "scale" : 2,
             "type" : "png"
           }
         ],
@@ -5040,9 +5040,9 @@
           {
             "__class" : "ExportOptions",
             "enabled" : true,
-            "nameExtension" : "",
+            "nameExtension" : "@2x",
             "nameExtensionMode" : "Suffix",
-            "scale" : 1,
+            "scale" : 2,
             "type" : "png"
           }
         ],
