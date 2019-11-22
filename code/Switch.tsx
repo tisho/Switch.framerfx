@@ -40,6 +40,7 @@ export function Switch(props) {
         overflow = true,
         initialState = 0,
         isInteractive,
+        onSwitch,
         ...rest
     } = props
 
@@ -70,6 +71,10 @@ export function Switch(props) {
         direction = -direction
     }
     currentIndexRef.current = current
+
+    if (current !== previous && typeof onSwitch !== "undefined") {
+        onSwitch(current, previous)
+    }
 
     const child = children[current]
 
