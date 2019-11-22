@@ -73,7 +73,7 @@ export function Switch(props) {
     currentIndexRef.current = current
 
     if (current !== previous && typeof onSwitch !== "undefined") {
-        onSwitch(current, previous)
+        onSwitch(current, previous, sanitizedIdentifier)
     }
 
     const child = children[current]
