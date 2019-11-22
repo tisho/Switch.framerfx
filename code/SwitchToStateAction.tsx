@@ -4,43 +4,15 @@ import { Frame, addPropertyControls, ControlType, RenderTarget } from "framer"
 import { useStore } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
+import { omit } from "./omit"
 import { colors as thumbnailColors } from "./thumbnailStyles"
-
-export function handleTrigger(store, setStore, target, action, targetState) {
-    if (target === "") return
-
-    const current = store[target]
-    const states =
-        store.__registry && store.__registry[target]
-            ? store.__registry[target]
-            : []
-
-    if (action === "specific") {
-        store[target] = targetState
-    }
-
-    if (action === "next") {
-        store[target] = current + 1 >= states.length ? 0 : current + 1
-    }
-
-    if (action === "previous") {
-        store[target] = current - 1 < 0 ? states.length - 1 : current - 1
-    }
-
-    setStore(store)
-}
+import { extractEventHandlersFromProps } from "./extractEventHandlersFromProps"
+import { eventTriggerProps, eventTriggerPropertyControls } from "./controls"
 
 // ------------- SwitchToStateAction Component ------------
 
 export function SwitchToStateAction(props) {
-    const {
-        children,
-        target,
-        trigger,
-        actionType,
-        targetState,
-        ...rest
-    } = props
+    const { children, target, trigger, ...rest } = props
     const sanitizedTarget = sanitizePropName(target)
     const [store, setStore] = useStore()
 
@@ -48,11 +20,12 @@ export function SwitchToStateAction(props) {
         return <SwitchToStateActionThumbnail />
     }
 
-    const onTrigger = () => {
-        handleTrigger(store, setStore, sanitizedTarget, actionType, targetState)
-    }
-
-    const events = { [trigger]: onTrigger }
+    const eventHandlers = extractEventHandlersFromProps(
+        props,
+        store,
+        setStore,
+        sanitizedTarget
+    )
 
     const child = children && children[0]
     let placeholder
@@ -65,11 +38,11 @@ export function SwitchToStateAction(props) {
 
     return (
         <Frame
-            {...rest}
+            {...eventHandlers}
+            {...omit(rest, eventTriggerProps)}
             background="transparent"
             size="100%"
             whileTap={{ opacity: 0.75 }}
-            {...events}
         >
             {!child && RenderTarget.current() === RenderTarget.canvas
                 ? placeholder
@@ -83,6 +56,7 @@ SwitchToStateAction.defaultProps = {
     width: 50,
     height: 50,
     target: "sharedSwitch",
+    isInteractive: true,
 }
 
 // ------------------- Property Controls ------------------
@@ -92,37 +66,13 @@ addPropertyControls(SwitchToStateAction, {
         type: ControlType.ComponentInstance,
         title: "Appearance",
     },
-    trigger: {
-        type: ControlType.Enum,
-        title: "Trigger",
-        options: [
-            "onTap",
-            "onTapStart",
-            "onTapCancel",
-            "onHoverStart",
-            "onHoverEnd",
-            "onDragStart",
-            "onDragEnd",
-        ],
-    },
     target: {
         type: ControlType.String,
         title: "Switch",
         defaultValue: "sharedSwitch",
     },
-    actionType: {
-        type: ControlType.Enum,
-        title: "Set to",
-        options: ["specific", "next", "previous"],
-        optionTitles: ["Specific State", "Next State", "Previous State"],
-    },
-    targetState: {
-        type: ControlType.Number,
-        displayStepper: true,
-        title: "State",
-        defaultValue: 0,
-        hidden: props => props.actionType !== "specific",
-    },
+
+    ...eventTriggerPropertyControls,
 })
 
 // ---------------------- Thumbnail -----------------------
