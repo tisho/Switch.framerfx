@@ -89,14 +89,6 @@ export function Switch(props) {
         })
     }
 
-    // decorate the desired state with additional transition props
-    // that will tell it how to animate its entry/exit
-    const childWithPresenceProps = cloneElement(child, {
-        ...child.props,
-        key: child.props.id,
-        ...TRANSITIONS[transition](child.props, props, direction),
-    })
-
     // Extract event handlers from props
     let eventHandlers = {}
     if (isInteractive) {
@@ -118,10 +110,20 @@ export function Switch(props) {
         >
             {RenderTarget.current() === RenderTarget.preview && (
                 <AnimatePresence initial={false} custom={direction}>
-                    {childWithPresenceProps}
+                    <Frame
+                        key={child.key}
+                        background={null}
+                        size="100%"
+                        {...TRANSITIONS[transition](
+                            child.props,
+                            props,
+                            direction
+                        )}
+                    >
+                        {child}
+                    </Frame>
                 </AnimatePresence>
             )}
-
             {RenderTarget.current() !== RenderTarget.preview && child}
         </Frame>
     )
