@@ -22,12 +22,13 @@ export const eventTriggerTitles = {
 
 export const eventTriggerProps = [
     ...eventTriggerNames,
+    ...eventTriggerNames.map(name => `${name}Action`),
     ...eventTriggerNames.map(name => `${name}SpecificIndex`),
 ]
 
 export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.reduce(
     (res, trigger) => {
-        res[trigger] = {
+        res[`${trigger}Action`] = {
             title: eventTriggerTitles[trigger] || trigger,
             type: ControlType.Enum,
             options: ["unset", "specific", "previous", "next"],
@@ -46,7 +47,8 @@ export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.
             displayStepper: true,
             defaultValue: 0,
             hidden: props =>
-                props.isInteractive === false || props[trigger] !== "specific",
+                props.isInteractive === false ||
+                props[`${trigger}Action`] !== "specific",
         }
 
         return res
