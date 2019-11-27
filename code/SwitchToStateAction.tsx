@@ -1,7 +1,7 @@
 import * as React from "react"
 import { createElement } from "react"
 import { Frame, addPropertyControls, ControlType, RenderTarget } from "framer"
-import { useStore } from "./globalStore"
+import { useSwitch } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
 import { omit } from "./omit"
@@ -12,9 +12,9 @@ import { eventTriggerProps, eventTriggerPropertyControls } from "./controls"
 // ------------- SwitchToStateAction Component ------------
 
 export function SwitchToStateAction(props) {
-    const { children, target, trigger, ...rest } = props
+    const { children, target, ...rest } = props
     const sanitizedTarget = sanitizePropName(target)
-    const [store, setStore] = useStore()
+    const switchControls = useSwitch()
 
     if (RenderTarget.current() === RenderTarget.thumbnail) {
         return <SwitchToStateActionThumbnail />
@@ -22,12 +22,11 @@ export function SwitchToStateAction(props) {
 
     const eventHandlers = extractEventHandlersFromProps(
         props,
-        store,
-        setStore,
+        switchControls,
         sanitizedTarget
     )
 
-    const child = children && children[0]
+    const child = children && React.Children.toArray(children)[0]
     let placeholder
 
     if (!child) {

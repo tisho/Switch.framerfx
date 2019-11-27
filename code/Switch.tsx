@@ -1,5 +1,5 @@
 import * as React from "react"
-import { createElement, cloneElement, useEffect, useRef } from "react"
+import { createElement, useEffect, useRef } from "react"
 import {
     Frame,
     addPropertyControls,
@@ -7,7 +7,7 @@ import {
     AnimatePresence,
     RenderTarget,
 } from "framer"
-import { useStore } from "./globalStore"
+import { useSwitch } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
 import { TRANSITIONS, DEFAULT_TWEEN, DEFAULT_SPRING } from "./transitions"
@@ -34,13 +34,19 @@ export function Switch(props) {
         return <SwitchThumbnail />
     }
 
-    const [store, setStore] = useStore()
+    const {
+        getSwitchStateIndex,
+        getAllSwitchStates,
+        setSwitchStateIndex,
+        registerSwitchStates,
+    } = useSwitch()
+
     const states = React.Children.toArray(children).map(c => c.props.name)
     const sanitizedIdentifier = sanitizePropName(identifier)
     const current =
-        typeof store[sanitizedIdentifier] === "undefined"
+        typeof getSwitchStateIndex(sanitizedIdentifier) === "undefined"
             ? initialState
-            : store[sanitizedIdentifier]
+            : getSwitchStateIndex(sanitizedIdentifier)
 
     // the current index ref will be used to calculate direction
     const currentIndexRef = useRef(current)
@@ -56,29 +62,34 @@ export function Switch(props) {
     if (atWrapBoundary) {
         direction = -direction
     }
-    currentIndexRef.current = current
 
-    if (current !== previous && typeof onSwitch !== "undefined") {
-        onSwitch(current, previous, sanitizedIdentifier)
+    if (children[current]) {
+        currentIndexRef.current = current
+    } else if (children[previous]) {
+        currentIndexRef.current = previous
+    } else {
+        currentIndexRef.current = initialState
     }
 
-    const child = children[current]
+    if (
+        currentIndexRef.current !== previous &&
+        typeof onSwitch !== "undefined"
+    ) {
+        onSwitch(currentIndexRef.current, previous, sanitizedIdentifier)
+    }
+
+    const child = children[currentIndexRef.current]
 
     // update the state for this element if the user manually
     // changes the initial state from the property controls
     useEffect(() => {
-        store[sanitizedIdentifier] = initialState
-        setStore(store)
+        setSwitchStateIndex(sanitizedIdentifier, initialState)
     }, [initialState])
 
     // store a registry of available states, so the SwitchToStateAction
     // instances can figure out what the next/previous state is
     useEffect(() => {
-        store.__registry = {
-            ...store.__registry,
-            [identifier]: states,
-        }
-        setStore(store)
+        registerSwitchStates(sanitizedIdentifier, states)
     }, [children])
 
     // if not connected to anything, show placeholder
@@ -94,8 +105,7 @@ export function Switch(props) {
     if (isInteractive) {
         eventHandlers = extractEventHandlersFromProps(
             props,
-            store,
-            setStore,
+            { getSwitchStateIndex, getAllSwitchStates, setSwitchStateIndex },
             sanitizedIdentifier
         )
     }

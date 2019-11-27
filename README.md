@@ -99,19 +99,73 @@ Controlled Switches rely on other elements to set their state. Here are a few us
 
 7. Preview your prototype.
 
-# Props
+# Using Switch in Code
 
 Use these in Overrides, or when you use the `Switch` component from code.
 
-## Switch
+## Switch Overrides
 
-| Prop           | Type     | Description                                                                                                                                                                                                                                                                                                                            |
-| -------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `identifier`   | string   | The name of the Switch instance. Make sure this is unique.                                                                                                                                                                                                                                                                             |
-| `initialState` | number   | The index of the initial state of the Switch. Default: `0`                                                                                                                                                                                                                                                                             |
-| `overflow`     | boolean  | Whether content outside the bounds of the container will be shown or not. Default: `true`                                                                                                                                                                                                                                              |
-| `onSwitch`     | function | A callback function that will be called whenever the Switch component switches its state. The function is passed in the current state index, the previous state index, and the identifier of the Switch component in this order.                                                                                                       |
-| `transition`   | enum     | The transition to use when switching states. Can be one of: `instant`, `dissolve`, `zoom`, `zoomout`, `zoomin`, `swapup`, `swapdown`, `swapleft`, `swapright`, `slidehorizontal`, `slidevertical`, `slideup`, `slidedown`, `slideleft`, `slideright`, `pushhorizontal`, `pushvertical`, `pushup`, `pushdown`, `pushleft`, `pushright`. |
+| Prop            | Type     | Description                                                                                                                                                                                                                                                                                                                            |
+| --------------- | -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `identifier`    | string   | The name of the Switch instance. Make sure this is unique.                                                                                                                                                                                                                                                                             |
+| `initialState`  | number   | The index of the initial state of the Switch. Default: `0`                                                                                                                                                                                                                                                                             |
+| `overflow`      | boolean  | Whether content outside the bounds of the container will be shown or not. Default: `true`                                                                                                                                                                                                                                              |
+| `onSwitch`      | function | A callback function that will be called whenever the Switch component switches its state. The function is passed in the current state index, the previous state index, and the identifier of the Switch component in this order.                                                                                                       |
+| `shouldTrigger` | function | A callback function that will be called right before a trigger is fired. Returning `false` from this callback will stop the trigger from firing. All original arguments to the trigger will be passed down to the function (e.g. `event`)                                                                                              |
+| `transition`    | enum     | The transition to use when switching states. Can be one of: `instant`, `dissolve`, `zoom`, `zoomout`, `zoomin`, `swapup`, `swapdown`, `swapleft`, `swapright`, `slidehorizontal`, `slidevertical`, `slideup`, `slidedown`, `slideleft`, `slideright`, `pushhorizontal`, `pushvertical`, `pushup`, `pushdown`, `pushleft`, `pushright`. |
+
+## SwitchToStateAction Overrides
+
+| Prop            | Type     | Description                                                                                                                                                                                                                               |
+| --------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `target`        | string   | The name of the Switch instance to target. Make sure this is unique and matches the name of an existing Switch.                                                                                                                           |
+| `shouldTrigger` | function | A callback function that will be called right before a trigger is fired. Returning `false` from this callback will stop the trigger from firing. All original arguments to the trigger will be passed down to the function (e.g. `event`) |
+
+## Controlling Switches with the `useSwitch` Hook
+
+To control Switches from code, first import the `useSwitch` hook at the top of your file:
+
+```
+import { useSwitch } from "@framer/tishogeorgiev.switch"
+```
+
+Then call the `useSwitch()` hook in your code component or override:
+
+```typescript
+export function SwitchButton(): Override {
+    const controls = useSwitch()
+
+    return {
+        onTap: () => {
+            controls.setSwitchStateIndex("sharedSwitch", 1)
+        },
+    }
+}
+```
+
+Note: you can **only** call this hook from inside a React component or override. Calling it from a different place in your code could result in unexpected behavior. [Read more about the rules of hook usage](https://reactjs.org/docs/hooks-rules.html).
+
+The `useSwitch` hook will return a controls object, containing the following functions:
+
+-   `controls.getSwitches() => string[]`
+
+    Returns an array of identifiers for all registered Switches.
+
+-   `controls.getSwitchStateIndex(identifier: string) => number`
+
+    Returns the index of the current state of a Switch.
+
+-   `controls.setSwitchStateIndex(identifier: string, state: number)`
+
+    Sets the current state index of a Switch. If the index isn't valid, it will still be accepted, but the targeted Switch will remain set to its last known good state.
+
+-   `controls.getAllSwitchStates(identifier: string) => string[]`
+
+    Returns an array of all names states for a Switch. Frames that haven't been explicitly named might have `undefined` as their name.
+
+-   `controls.registerSwitchStates(identifier: string, states: string[])`
+
+    Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Release Notes
 

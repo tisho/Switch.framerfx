@@ -1,12 +1,6 @@
-import { Data, Override, useAnimation } from "framer"
+import { Override, useAnimation } from "framer"
 
-const data = Data({
-    rotate: 0,
-    rotateY: 0,
-    toggle: true,
-})
-
-export function UnlockSlider(props): Override {
+export function UnlockSlider(): Override {
     const controls = useAnimation()
     const dragThreshold = 200
 

@@ -3,8 +3,7 @@ import { handleTrigger } from "./actions"
 
 export function extractEventHandlersFromProps(
     props,
-    store,
-    setStore,
+    switchControls,
     sanitizedIdentifier
 ) {
     return eventTriggerNames.reduce((handlers, event) => {
@@ -27,8 +26,7 @@ export function extractEventHandlersFromProps(
                 }
 
                 handleTrigger(
-                    store,
-                    setStore,
+                    switchControls,
                     sanitizedIdentifier,
                     action,
                     props[`${event}SpecificIndex`]
