@@ -4,6 +4,20 @@
 
 **[→ View documentation on GitHub](https://github.com/tisho/Switch.framerfx)**
 
+# Release Notes
+
+11/26/2019
+
+-   **BREAKING CHANGE:** `SwitchToStateAction` now lets you define actions for multiple triggers, similar to a fully interactive Switch. Unfortunately, this change isn't compatible with the previous version of this package, so if you update to the latest version, make sure you rewire all hotspots you're using.
+-   NEW: Code-level API for controlling Switches using the new `useSwitch` hook. More details in the docs below.
+-   NEW: Added a `shouldTrigger` callback to SwitchToStateAction, which will be called whenever a trigger is about to be executed. If `shouldTrigger` returns `false`, the trigger won't fire. Check out the "Slide to Unlock" example in the updated examples project.
+-   FIX: Fixed an issue that prevented Switches to use plain Stacks or some code component instances as states.
+-   FIX: If an invalid state index is passed to the Switch, it will now stay at the last known good state, instead of reverting to the placeholder state.
+
+11/21/2019
+
+-   NEW: Added `onSwitch` callback to Switch component, which will be called when the current state changes.
+
 # Examples
 
 **[→ Download all examples (.framerx file)](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-examples.framerx)**
@@ -43,23 +57,23 @@ Interactive Switches can manage their own state. Use them when you need to have 
 
 1. Drag and drop a Switch component onto the canvas.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-1.png" width="600">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-1.png)
 
 2. Connect it to the states you want to switch between.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-2.png" width="600">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-2.png)
 
 3. In the properties panel, set "Interactive" to "Yes".
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-3.png" width="227">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-3.png)
 
 4. Choose the trigger for the state change, and the target action.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-4.png" width="227">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-4.png)
 
 5. Customize the transition to use when switching between states.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-5.png" width="227">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-interactive-5.png)
 
 6. Preview your prototype.
 
@@ -75,27 +89,29 @@ Controlled Switches rely on other elements to set their state. Here are a few us
 
 1. Drag and drop a Switch component onto the canvas.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-1.png" width="600">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-1.png)
 
 2. Connect it to the states you want to switch between.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-2.png" width="600">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-2.png)
 
 3. Choose a unique name for your switch. This name will let other `SwitchToStateAction` hotspots control the state of your switch.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-3.png" width="227">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-3.png)
 
 4. Drag and drop a `SwitchToStateAction` component onto the canvas. This component will act as a hotspot that changes the state of a Switch component when the user interacts with it.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-4.png" width="400">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-4.png)
 
 5. Change the name of the target `Switch` to the name you used in step 3, then pick a trigger, and a target state.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-5.png" width="227">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-5.png)
+
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-6.png)
 
 6. Customize the transition to use when switching between states.
 
-<img src="https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-6.png" width="227">
+![](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-controlled-7.png)
 
 7. Preview your prototype.
 
@@ -166,12 +182,6 @@ The `useSwitch` hook will return a controls object, containing the following fun
 -   `controls.registerSwitchStates(identifier: string, states: string[])`
 
     Registers a list of named states for a particular Switch identifier. For internal use only.
-
-# Release Notes
-
-11/21/2019
-
--   NEW: Added `onSwitch` callback to Switch component, which will be called when the current state changes.
 
 # Get In Touch
 
