@@ -1,13 +1,18 @@
 import * as React from "react"
-import { createElement } from "react"
+import { useEffect, createElement } from "react"
 import { Frame, addPropertyControls, ControlType, RenderTarget } from "framer"
+import hotkeys, { KeyHandler } from "hotkeys-js"
 import { useSwitch } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
 import { omit } from "./omit"
 import { colors as thumbnailColors } from "./thumbnailStyles"
 import { extractEventHandlersFromProps } from "./extractEventHandlersFromProps"
-import { eventTriggerProps, eventTriggerPropertyControls } from "./controls"
+import {
+    eventTriggerProps,
+    keyEventTriggerProps,
+    eventTriggerPropertyControls,
+} from "./controls"
 
 // ------------- SwitchToStateAction Component ------------
 
@@ -20,11 +25,33 @@ export function SwitchToStateAction(props) {
         return <SwitchToStateActionThumbnail />
     }
 
-    const eventHandlers = extractEventHandlersFromProps(
+    // Extract event handlers from props
+    let [eventHandlers, keyEvents] = extractEventHandlersFromProps(
         props,
         switchControls,
         sanitizedTarget
     )
+
+    // attach key event handlers
+    const keyEventProps = Object.keys(props)
+        .filter(prop => keyEventTriggerProps.indexOf(prop) !== -1)
+        .map(prop => props[prop])
+
+    useEffect(() => {
+        if (RenderTarget.current() !== RenderTarget.preview) {
+            return
+        }
+
+        keyEvents.forEach(({ hotkey, options, handler }) =>
+            hotkeys(hotkey, options, handler as KeyHandler)
+        )
+
+        return () => {
+            keyEvents.forEach(({ hotkey, handler }) =>
+                hotkeys.unbind(hotkey, handler as KeyHandler)
+            )
+        }
+    }, keyEventProps)
 
     const child = children && React.Children.toArray(children)[0]
     let placeholder

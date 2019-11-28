@@ -7,13 +7,18 @@ import {
     AnimatePresence,
     RenderTarget,
 } from "framer"
+import hotkeys, { KeyHandler } from "hotkeys-js"
 import { useSwitch } from "./globalStore"
 import { placeholderState } from "./placeholderState"
 import { sanitizePropName } from "./sanitizePropName"
 import { TRANSITIONS, DEFAULT_TWEEN, DEFAULT_SPRING } from "./transitions"
 import { omit } from "./omit"
 import { colors as thumbnailColors } from "./thumbnailStyles"
-import { eventTriggerProps, eventTriggerPropertyControls } from "./controls"
+import {
+    eventTriggerProps,
+    keyEventTriggerProps,
+    eventTriggerPropertyControls,
+} from "./controls"
 import { extractEventHandlersFromProps } from "./extractEventHandlersFromProps"
 
 // ------------------- Switch Component -------------------
@@ -101,14 +106,34 @@ export function Switch(props) {
     }
 
     // Extract event handlers from props
-    let eventHandlers = {}
-    if (isInteractive) {
-        eventHandlers = extractEventHandlersFromProps(
-            props,
-            { getSwitchStateIndex, getAllSwitchStates, setSwitchStateIndex },
-            sanitizedIdentifier
+    let [eventHandlers, keyEvents] = !isInteractive
+        ? [{}, []]
+        : extractEventHandlersFromProps(
+              props,
+              { getSwitchStateIndex, getAllSwitchStates, setSwitchStateIndex },
+              sanitizedIdentifier
+          )
+
+    // attach key event handlers
+    const keyEventProps = Object.keys(props)
+        .filter(prop => keyEventTriggerProps.indexOf(prop) !== -1)
+        .map(prop => props[prop])
+
+    useEffect(() => {
+        if (RenderTarget.current() !== RenderTarget.preview) {
+            return
+        }
+
+        keyEvents.forEach(({ hotkey, options, handler }) =>
+            hotkeys(hotkey, options, handler as KeyHandler)
         )
-    }
+
+        return () => {
+            keyEvents.forEach(({ hotkey, handler }) =>
+                hotkeys.unbind(hotkey, handler as KeyHandler)
+            )
+        }
+    }, keyEventProps)
 
     return (
         <Frame
