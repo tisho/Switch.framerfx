@@ -97,14 +97,6 @@ export function Switch(props) {
         registerSwitchStates(sanitizedIdentifier, states)
     }, [children])
 
-    // if not connected to anything, show placeholder
-    if (!child) {
-        return createElement(placeholderState, {
-            title: "No states",
-            label: "Add views for each state by connecting them on the Canvas",
-        })
-    }
-
     // Extract event handlers from props
     let [eventHandlers, keyEvents] = !isInteractive
         ? [{}, []]
@@ -134,6 +126,14 @@ export function Switch(props) {
             )
         }
     }, keyEventProps)
+
+    // if not connected to anything, show placeholder
+    if (!child) {
+        return createElement(placeholderState, {
+            title: "No states",
+            label: "Add views for each state by connecting them on the Canvas",
+        })
+    }
 
     return (
         <Frame
