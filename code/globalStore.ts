@@ -1,13 +1,8 @@
-import { createStore } from "./store"
+import { setGlobal, useGlobal } from "reactn"
 
-declare global {
-    interface Window {
-        __switchStore: any
-    }
-}
-
-window.__switchStore = window.__switchStore || createStore({ __registry: {} })
-export const useStore = window.__switchStore
+setGlobal({
+    __switch: { __registry: {} },
+})
 
 type SwitchControls = () => {
     getSwitches: () => string[]
@@ -18,7 +13,7 @@ type SwitchControls = () => {
 }
 
 export const useSwitch: SwitchControls = () => {
-    const [store, setStore] = useStore()
+    const [store, setStore] = useGlobal("__switch")
 
     const getSwitchStateIndex = (identifier: string) => {
         return store[identifier]

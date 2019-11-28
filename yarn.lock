@@ -24,3 +24,20 @@ csstype@^2.2.0:
   version "2.6.1"
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-2.6.1.tgz#4cfbf637a577497036ebcd7e32647ef19a0b8076"
   integrity sha512-wv7IRqCGsL7WGKB8gPvrl+++HlFM9kxAM6jL1EXNPNTshEJYilMkbfS2SnuHha77uosp/YVK0wAp2jmlBzn1tg==
+
+hotkeys-js@^3.7.3:
+  version "3.7.3"
+  resolved "https://registry.yarnpkg.com/hotkeys-js/-/hotkeys-js-3.7.3.tgz#f0c718166e844b3e52065d1b60cffaa6065b5183"
+  integrity sha512-CSaeVPAKEEYNexYR35znMJnCqoofk7oqG/AOOqWow1qDT0Yxy+g+Y8Hs/LhGlsZaSJ7973YN6/N41LAr3t30QQ==
+
+reactn@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/reactn/-/reactn-2.2.4.tgz#f42168177f865feeeba057c8ad558d5456c730f9"
+  integrity sha512-ROZGocaVrunwcyxmmi7tQWk0/NhersX55Zh0yInDXxD2sc7L4iriSu6oG0Cmq2QcwfEJTFXIEL+ASBpDgAYywQ==
+  dependencies:
+    use-force-update "^1.0.5"
+
+use-force-update@^1.0.5:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/use-force-update/-/use-force-update-1.0.7.tgz#f5e672633f5a398b25c33b2287150918bcb3526b"
+  integrity sha512-k5dppYhO+I5X/cd7ildbrzeMZJkWwdAh5adaIk0qKN2euh7J0h2GBGBcB4QZ385eyHHnp7LIygvebdRx3XKdwA==
