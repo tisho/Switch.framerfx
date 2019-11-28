@@ -1821,7 +1821,7 @@
               "onHoverStartAction" : "specific",
               "onHoverStartSpecificIndex" : 1,
               "onKeyDownAction" : "unset",
-              "onKeyDownKey" : "",
+              "onKeyDownKey" : "s",
               "onKeyDownSpecificIndex" : 0,
               "onKeyUpAction" : "unset",
               "onKeyUpKey" : "",
