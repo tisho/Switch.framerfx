@@ -6,6 +6,10 @@
 
 # Release Notes
 
+11/27/2019
+
+-   NEW: Added two new triggers: "Key Down" and "Key Up", which allow you to switch states using keyboard shortcuts. You can use single keys as shortcuts, or more complex shortcuts like `ctrl+o, cmd+shift+t`. Switch uses the popular [hotkeys-js](https://github.com/jaywcjlove/hotkeys) library, so take a look at some of the examples on its Github page to get an idea of the syntax.
+
 11/26/2019
 
 -   **BREAKING CHANGE:** `SwitchToStateAction` now lets you define actions for multiple triggers, similar to a fully interactive Switch. Unfortunately, this change isn't compatible with the previous version of this package, so if you update to the latest version, make sure you rewire all hotspots you're using.
