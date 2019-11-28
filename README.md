@@ -6,6 +6,11 @@
 
 # Release Notes
 
+11/28/2019
+
+-   FIX: Fixed an issue where the connecting the first state of a Switch would cause an error.
+-   FIX: Fixed an issue that prevented event handlers you set through Overrides from firing if the same trigger wasn't also set on the Switch instance.
+
 11/27/2019
 
 -   NEW: Added two new triggers: "Key Down" and "Key Up", which allow you to switch states using keyboard shortcuts. You can use single keys as shortcuts, or more complex shortcuts like `ctrl+o, cmd+shift+t`. Switch uses the popular [hotkeys-js](https://github.com/jaywcjlove/hotkeys) library, so take a look at some of the examples on its Github page to get an idea of the syntax.
