@@ -164,9 +164,32 @@ export function Switch(props) {
     )
 }
 
+const defaultProps = {
+    overflow: true,
+    identifier: "sharedSwitch",
+    initialState: 0,
+    isInteractive: false,
+    transition: "instant",
+    transitionConfigType: "default",
+    transitionType: "spring",
+    damping: DEFAULT_SPRING.damping,
+    mass: DEFAULT_SPRING.mass,
+    stiffness: DEFAULT_SPRING.stiffness,
+    duration: DEFAULT_TWEEN.duration,
+    ease: "easeOut",
+    customEase: "0.25, 0.1, 0.25, 1",
+    ...Object.keys(eventTriggerPropertyControls).reduce((res, prop) => {
+        if ("defaultValue" in eventTriggerPropertyControls[prop]) {
+            res[prop] = eventTriggerPropertyControls[prop].defaultValue
+        }
+        return res
+    }, {}),
+}
+
 Switch.defaultProps = {
     height: 240,
     width: 240,
+    ...defaultProps,
 }
 
 // ------------------- Property Controls ------------------
@@ -175,7 +198,7 @@ addPropertyControls(Switch, {
     overflow: {
         type: ControlType.Boolean,
         title: "Overflow",
-        defaultValue: true,
+        defaultValue: defaultProps.overflow,
         enabledTitle: "Visible",
         disabledTitle: "Hidden",
     },
@@ -191,14 +214,14 @@ addPropertyControls(Switch, {
     identifier: {
         title: "Name",
         type: ControlType.String,
-        defaultValue: "sharedSwitch",
+        defaultValue: defaultProps.identifier,
     },
 
     initialState: {
         title: "Initial State",
         type: ControlType.Number,
         displayStepper: true,
-        defaultValue: 0,
+        defaultValue: defaultProps.initialState,
     },
 
     // Event Handling
@@ -208,7 +231,7 @@ addPropertyControls(Switch, {
         type: ControlType.Boolean,
         enabledTitle: "Yes",
         disabledTitle: "No",
-        defaultValue: false,
+        defaultValue: defaultProps.isInteractive,
     },
 
     ...eventTriggerPropertyControls,
@@ -264,7 +287,7 @@ addPropertyControls(Switch, {
             "Push ←",
             "Push →",
         ],
-        defaultValue: "instant",
+        defaultValue: defaultProps.transition,
     },
 
     transitionConfigType: {
@@ -272,7 +295,7 @@ addPropertyControls(Switch, {
         type: ControlType.SegmentedEnum,
         options: ["default", "custom"],
         optionTitles: ["Default", "Custom"],
-        defaultValue: "default",
+        defaultValue: defaultProps.transitionConfigType,
         hidden: props => props.transition === "instant",
     },
 
@@ -281,7 +304,7 @@ addPropertyControls(Switch, {
         type: ControlType.Enum,
         options: ["spring", "tween"],
         optionTitles: ["Spring", "Tween"],
-        defaultValue: "spring",
+        defaultValue: defaultProps.transitionType,
         hidden: props =>
             props.transition === "instant" ||
             props.transitionConfigType === "default",
@@ -296,7 +319,7 @@ addPropertyControls(Switch, {
             props.transition === "instant" ||
             props.transitionType !== "spring" ||
             props.transitionConfigType === "default",
-        defaultValue: DEFAULT_SPRING.damping,
+        defaultValue: defaultProps.damping,
     },
 
     mass: {
@@ -309,7 +332,7 @@ addPropertyControls(Switch, {
             props.transition === "instant" ||
             props.transitionType !== "spring" ||
             props.transitionConfigType === "default",
-        defaultValue: DEFAULT_SPRING.mass,
+        defaultValue: defaultProps.mass,
     },
 
     stiffness: {
@@ -321,7 +344,7 @@ addPropertyControls(Switch, {
             props.transition === "instant" ||
             props.transitionType !== "spring" ||
             props.transitionConfigType === "default",
-        defaultValue: DEFAULT_SPRING.stiffness,
+        defaultValue: defaultProps.stiffness,
     },
 
     duration: {
@@ -334,7 +357,7 @@ addPropertyControls(Switch, {
             props.transition === "instant" ||
             props.transitionType !== "tween" ||
             props.transitionConfigType === "default",
-        defaultValue: DEFAULT_TWEEN.duration,
+        defaultValue: defaultProps.duration,
     },
 
     ease: {
@@ -372,7 +395,7 @@ addPropertyControls(Switch, {
             props.transition === "instant" ||
             props.transitionType !== "tween" ||
             props.transitionConfigType === "default",
-        defaultValue: "easeOut",
+        defaultValue: defaultProps.ease,
     },
 
     customEase: {
@@ -383,7 +406,7 @@ addPropertyControls(Switch, {
             props.transitionType !== "tween" ||
             props.transitionConfigType === "default" ||
             props.ease !== "custom",
-        defaultValue: "0.25, 0.1, 0.25, 1",
+        defaultValue: defaultProps.customEase,
     },
 })
 

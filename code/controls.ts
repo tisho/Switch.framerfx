@@ -50,6 +50,7 @@ export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.
                 "Previous State",
                 "Next State",
             ],
+            defaultValue: "unset",
             hidden: props => props.isInteractive === false,
         }
 

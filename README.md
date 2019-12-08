@@ -6,6 +6,10 @@
 
 # Release Notes
 
+12/8/2019
+
+-   FIX: Ensured that default props are correctly passed to a Switch component when used directly from code.
+
 11/28/2019
 
 -   FIX: Fixed an issue where the connecting the first state of a Switch would cause an error.
