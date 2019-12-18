@@ -1,37 +1,52 @@
 import * as React from "react"
-import { createElement, useEffect, useRef } from "react"
+import {
+    createElement,
+    useEffect,
+    useRef,
+    useState,
+    useMemo,
+    useCallback,
+    memo,
+} from "react"
+import { addCallback } from "reactn"
 import {
     Frame,
     addPropertyControls,
     ControlType,
     AnimatePresence,
     RenderTarget,
+    Size,
 } from "framer"
 import hotkeys, { KeyHandler } from "hotkeys-js"
-import { useSwitch } from "./globalStore"
+import { actions } from "./store/globalStore"
 import { placeholderState } from "./placeholderState"
-import { sanitizePropName } from "./sanitizePropName"
 import { TRANSITIONS, DEFAULT_TWEEN, DEFAULT_SPRING } from "./transitions"
-import { omit } from "./omit"
+import { omit } from "./utils/omit"
 import { colors as thumbnailColors } from "./thumbnailStyles"
 import {
     eventTriggerProps,
     keyEventTriggerProps,
+    automaticEventTriggerProps,
     eventTriggerPropertyControls,
 } from "./controls"
-import { extractEventHandlersFromProps } from "./extractEventHandlersFromProps"
+import { extractEventHandlersFromProps } from "./utils/extractEventHandlersFromProps"
+import { AutoAnimatedState } from "./AutoAnimatedState"
+import { sanitizePropName, prefixPropName } from "./utils/propNameHelpers"
+import { randomID } from "./utils/randomID"
 
 // ------------------- Switch Component -------------------
 
-export function Switch(props) {
+function _Switch(props) {
     const {
         children,
+        autoAssignIdentifier,
         identifier = "",
         transition = "instant",
         overflow = true,
         initialState = 0,
         isInteractive,
         onSwitch,
+        morphCodeComponentPropsOnly,
         ...rest
     } = props
 
@@ -39,22 +54,32 @@ export function Switch(props) {
         return <SwitchThumbnail />
     }
 
+    const [currentStateIndex, setCurrentStateIndex] = useState(initialState)
+
+    const [id, setId] = useState(autoAssignIdentifier ? randomID() : identifier)
+
+    useEffect(() => {
+        setId(autoAssignIdentifier ? randomID() : identifier)
+    }, [autoAssignIdentifier, identifier])
+
     const {
         getSwitchStateIndex,
         getAllSwitchStates,
         setSwitchStateIndex,
         registerSwitchStates,
-    } = useSwitch()
+    } = actions
 
     const states = React.Children.toArray(children).map(c => c.props.name)
-    const sanitizedIdentifier = sanitizePropName(identifier)
+    const sanitizedIdentifier = sanitizePropName(id)
     const current =
-        typeof getSwitchStateIndex(sanitizedIdentifier) === "undefined"
+        typeof currentStateIndex === "undefined"
             ? initialState
-            : getSwitchStateIndex(sanitizedIdentifier)
+            : currentStateIndex
 
     // the current index ref will be used to calculate direction
     const currentIndexRef = useRef(current)
+    const previousIndexRef = useRef(current)
+
     const previous = currentIndexRef.current
     const atWrapBoundary =
         (previous === states.length - 1 && current === 0) ||
@@ -76,6 +101,13 @@ export function Switch(props) {
         currentIndexRef.current = initialState
     }
 
+    // ensure that previousIndexRef always points to the true previous index
+    // i.e. even if you re-render the same state, previousIndexRef won't change
+    // this is needed to pass the correct source/target for AutoAnimatedState
+    if (currentIndexRef.current !== previous) {
+        previousIndexRef.current = previous
+    }
+
     if (
         currentIndexRef.current !== previous &&
         typeof onSwitch !== "undefined"
@@ -85,26 +117,52 @@ export function Switch(props) {
 
     const child = children[currentIndexRef.current]
 
+    useEffect(() => {
+        return addCallback(({ __switch }) => {
+            const updatedIndex = __switch[sanitizedIdentifier]
+            if (currentIndexRef.current !== updatedIndex) {
+                setCurrentStateIndex(updatedIndex)
+            }
+        })
+    }, [sanitizedIdentifier])
+
     // update the state for this element if the user manually
     // changes the initial state from the property controls
     useEffect(() => {
         setSwitchStateIndex(sanitizedIdentifier, initialState)
-    }, [initialState])
+    }, [initialState, sanitizedIdentifier])
 
     // store a registry of available states, so the SwitchToStateAction
     // instances can figure out what the next/previous state is
     useEffect(() => {
         registerSwitchStates(sanitizedIdentifier, states)
-    }, [children])
+    }, [children, sanitizedIdentifier])
 
     // Extract event handlers from props
-    let [eventHandlers, keyEvents] = !isInteractive
-        ? [{}, []]
+    let [eventHandlers, keyEvents, automaticEvents] = !isInteractive
+        ? [{}, [], []]
         : extractEventHandlersFromProps(
               props,
               { getSwitchStateIndex, getAllSwitchStates, setSwitchStateIndex },
               sanitizedIdentifier
           )
+
+    const automaticEventProps = Object.keys(props)
+        .filter(prop => automaticEventTriggerProps.indexOf(prop) !== -1)
+        .map(prop => props[prop])
+
+    // execute automatic (delay) event triggers
+    useEffect(() => {
+        if (RenderTarget.current() !== RenderTarget.preview) {
+            return
+        }
+
+        const timeouts = automaticEvents.map(({ handler }) => handler())
+
+        return () => {
+            timeouts.forEach(clearTimeout)
+        }
+    }, [...automaticEventProps, sanitizedIdentifier])
 
     // attach key event handlers
     const keyEventProps = Object.keys(props)
@@ -125,7 +183,43 @@ export function Switch(props) {
                 hotkeys.unbind(hotkey, handler as KeyHandler)
             )
         }
-    }, keyEventProps)
+    }, [...keyEventProps, sanitizedIdentifier])
+
+    const transitionPropsForElement = useCallback(
+        ({
+            source,
+            sourceRect,
+            target,
+            transition,
+            useAbsolutePositioning,
+            transitionKey,
+        }) => {
+            if (transition === "enter") {
+                return TRANSITIONS[props.enterTransition](source.props, props, {
+                    transitionKey,
+                    sourceRect,
+                    useAbsolutePositioning,
+                })
+            }
+
+            if (transition === "exit") {
+                return TRANSITIONS[props.exitTransition](source.props, props, {
+                    transitionKey,
+                    sourceRect,
+                    useAbsolutePositioning,
+                })
+            }
+
+            return TRANSITIONS.morph(source.props, props)
+        },
+        [props]
+    )
+
+    const size = useMemo(() => {
+        if (child) {
+            return Size(child.props.width, child.props.height)
+        }
+    }, [child])
 
     // if not connected to anything, show placeholder
     if (!child) {
@@ -133,6 +227,46 @@ export function Switch(props) {
             title: "No states",
             label: "Add views for each state by connecting them on the Canvas",
         })
+    }
+
+    if (RenderTarget.current() !== RenderTarget.preview) {
+        return (
+            <Frame
+                {...eventHandlers}
+                {...omit(rest, eventTriggerProps)}
+                background="transparent"
+                size="100%"
+                overflow={overflow ? "visible" : "hidden"}
+            >
+                {child}
+            </Frame>
+        )
+    }
+
+    if (transition === "autoanimate") {
+        return (
+            <Frame
+                {...eventHandlers}
+                {...omit(rest, eventTriggerProps)}
+                background="transparent"
+                size="100%"
+                overflow={overflow ? "visible" : "hidden"}
+            >
+                <Frame background={null} size="100%">
+                    <AutoAnimatedState
+                        source={children[previousIndexRef.current]}
+                        target={children[currentIndexRef.current]}
+                        transitionPropsForElement={transitionPropsForElement}
+                        direction={direction}
+                        sourceParentSize={size}
+                        targetParentSize={size}
+                        morphCodeComponentPropsOnly={
+                            morphCodeComponentPropsOnly
+                        }
+                    />
+                </Frame>
+            </Frame>
+        )
     }
 
     return (
@@ -143,41 +277,62 @@ export function Switch(props) {
             size="100%"
             overflow={overflow ? "visible" : "hidden"}
         >
-            {RenderTarget.current() === RenderTarget.preview && (
-                <AnimatePresence initial={false} custom={direction}>
-                    <Frame
-                        key={child.key}
-                        background={null}
-                        size="100%"
-                        {...TRANSITIONS[transition](
-                            child.props,
-                            props,
-                            direction
-                        )}
-                    >
-                        {child}
-                    </Frame>
-                </AnimatePresence>
-            )}
-            {RenderTarget.current() !== RenderTarget.preview && child}
+            <AnimatePresence initial={false} custom={direction}>
+                <Frame
+                    key={child.key}
+                    background={null}
+                    size="100%"
+                    {...TRANSITIONS[transition](child.props, props, direction)}
+                >
+                    {child}
+                </Frame>
+            </AnimatePresence>
         </Frame>
     )
 }
 
 const defaultProps = {
     overflow: true,
+    autoAssignIdentifier: false,
     identifier: "sharedSwitch",
     initialState: 0,
     isInteractive: false,
+    // Specifies how code components will be handled during auto-animate.
+    // When this is true, the auto animator will try to preserve code component
+    // instances between states and only throw new props at them. When it's false,
+    // code components will cross-dissolve between instances in the source / target state.
+    // Switch this to `false` with an override if code components don't seem to behave
+    // as expected during auto animate transitions.
+    morphCodeComponentPropsOnly: true,
     transition: "instant",
     transitionConfigType: "default",
     transitionType: "spring",
+    enterTransition: "dissolve",
+    enterTransitionConfigType: "default",
+    enterTransitionType: "tween",
+    exitTransition: "dissolve",
+    exitTransitionConfigType: "default",
+    exitTransitionType: "tween",
     damping: DEFAULT_SPRING.damping,
     mass: DEFAULT_SPRING.mass,
     stiffness: DEFAULT_SPRING.stiffness,
     duration: DEFAULT_TWEEN.duration,
     ease: "easeOut",
     customEase: "0.25, 0.1, 0.25, 1",
+    enterDamping: DEFAULT_SPRING.damping,
+    enterMass: DEFAULT_SPRING.mass,
+    enterStiffness: DEFAULT_SPRING.stiffness,
+    enterDuration: DEFAULT_TWEEN.duration,
+    enterEase: "easeOut",
+    enterCustomEase: "0.25, 0.1, 0.25, 1",
+    exitDamping: DEFAULT_SPRING.damping,
+    exitMass: DEFAULT_SPRING.mass,
+    exitStiffness: DEFAULT_SPRING.stiffness,
+    exitDuration: DEFAULT_TWEEN.duration,
+    exitEase: "easeOut",
+    exitCustomEase: "0.25, 0.1, 0.25, 1",
+    staggerChildren: 0,
+    delayChildren: 0,
     ...Object.keys(eventTriggerPropertyControls).reduce((res, prop) => {
         if ("defaultValue" in eventTriggerPropertyControls[prop]) {
             res[prop] = eventTriggerPropertyControls[prop].defaultValue
@@ -186,14 +341,154 @@ const defaultProps = {
     }, {}),
 }
 
-Switch.defaultProps = {
+_Switch.defaultProps = {
     height: 240,
     width: 240,
     ...defaultProps,
 }
 
+_Switch.displayName = "Switch"
+const __Switch = memo(_Switch)
+
+export const Switch = props => <__Switch {...props} />
+
 // ------------------- Property Controls ------------------
 
+const transitionOptionsWithPrefix = (
+    prefix = null,
+    shouldHide = p => false
+) => {
+    const p = n => prefixPropName(n, prefix)
+
+    return {
+        [p("transitionConfigType")]: {
+            title: " ",
+            type: ControlType.SegmentedEnum,
+            options: ["default", "custom"],
+            optionTitles: ["Default", "Custom"],
+            defaultValue: defaultProps[p("transitionConfigType")],
+            hidden: props =>
+                shouldHide(props) || props[p("transition")] === p("instant"),
+        },
+
+        [p("transitionType")]: {
+            title: "Type",
+            type: ControlType.Enum,
+            options: ["spring", "tween"],
+            optionTitles: ["Spring", "Tween"],
+            defaultValue: defaultProps[p("transitionType")],
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionConfigType")] === "default",
+        },
+
+        [p("damping")]: {
+            title: "Damping",
+            type: ControlType.Number,
+            min: 0,
+            max: 50,
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionType")] !== "spring" ||
+                props[p("transitionConfigType")] === "default",
+            defaultValue: defaultProps[p("damping")],
+        },
+
+        [p("mass")]: {
+            title: "Mass",
+            type: ControlType.Number,
+            step: 0.1,
+            min: 0,
+            max: 5,
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionType")] !== "spring" ||
+                props[p("transitionConfigType")] === "default",
+            defaultValue: defaultProps[p("mass")],
+        },
+
+        [p("stiffness")]: {
+            title: "Stiffness",
+            type: ControlType.Number,
+            min: 0,
+            max: 1000,
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionType")] !== "spring" ||
+                props[p("transitionConfigType")] === "default",
+            defaultValue: defaultProps[p("stiffness")],
+        },
+
+        [p("duration")]: {
+            title: "Duration",
+            type: ControlType.Number,
+            step: 0.1,
+            min: 0,
+            displayStepper: true,
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionType")] !== "tween" ||
+                props[p("transitionConfigType")] === "default",
+            defaultValue: defaultProps[p("duration")],
+        },
+
+        [p("ease")]: {
+            title: "Easing",
+            type: ControlType.Enum,
+            options: [
+                "custom",
+                "linear",
+                "easeIn",
+                "easeOut",
+                "easeInOut",
+                "circIn",
+                "circOut",
+                "circInOut",
+                "backIn",
+                "backOut",
+                "backInOut",
+                "anticipate",
+            ],
+            optionTitles: [
+                "Custom",
+                "linear",
+                "easeIn",
+                "easeOut",
+                "easeInOut",
+                "circIn",
+                "circOut",
+                "circInOut",
+                "backIn",
+                "backOut",
+                "backInOut",
+                "anticipate",
+            ],
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionType")] !== "tween" ||
+                props[p("transitionConfigType")] === "default",
+            defaultValue: defaultProps[p("ease")],
+        },
+
+        [p("customEase")]: {
+            title: " ",
+            type: ControlType.String,
+            hidden: props =>
+                shouldHide(props) ||
+                props[p("transition")] === p("instant") ||
+                props[p("transitionType")] !== "tween" ||
+                props[p("transitionConfigType")] === "default" ||
+                props[p("ease")] !== "custom",
+            defaultValue: defaultProps[p("customEase")],
+        },
+    }
+}
 addPropertyControls(Switch, {
     overflow: {
         type: ControlType.Boolean,
@@ -211,10 +506,19 @@ addPropertyControls(Switch, {
         },
     },
 
-    identifier: {
+    autoAssignIdentifier: {
         title: "Name",
+        type: ControlType.Boolean,
+        enabledTitle: "Auto",
+        disabledTitle: "Set",
+        defaultValue: defaultProps.autoAssignIdentifier,
+    },
+
+    identifier: {
+        title: " ",
         type: ControlType.String,
         defaultValue: defaultProps.identifier,
+        hidden: props => props.autoAssignIdentifier,
     },
 
     initialState: {
@@ -243,6 +547,7 @@ addPropertyControls(Switch, {
         type: ControlType.Enum,
         options: [
             "instant",
+            "autoanimate",
             "dissolve",
             "zoom",
             "zoomout",
@@ -266,6 +571,7 @@ addPropertyControls(Switch, {
         ],
         optionTitles: [
             "Instant",
+            "Auto Animate (Magic Move)",
             "Dissolve",
             "Zoom (Direction-aware)",
             "Zoom Out",
@@ -290,123 +596,52 @@ addPropertyControls(Switch, {
         defaultValue: defaultProps.transition,
     },
 
-    transitionConfigType: {
-        title: " ",
-        type: ControlType.SegmentedEnum,
-        options: ["default", "custom"],
-        optionTitles: ["Default", "Custom"],
-        defaultValue: defaultProps.transitionConfigType,
-        hidden: props => props.transition === "instant",
-    },
+    ...transitionOptionsWithPrefix(""),
 
-    transitionType: {
-        title: "Type",
+    enterTransition: {
+        title: "Enter Transition",
         type: ControlType.Enum,
-        options: ["spring", "tween"],
-        optionTitles: ["Spring", "Tween"],
-        defaultValue: defaultProps.transitionType,
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionConfigType === "default",
+        options: ["enterdissolve", "growdissolve", "enterInstant"],
+        optionTitles: ["Dissolve", "Grow", "Instant"],
+        defaultValue: defaultProps.enterTransition,
+        hidden: props => props.transition !== "autoanimate",
     },
 
-    damping: {
-        title: "Damping",
-        type: ControlType.Number,
-        min: 0,
-        max: 50,
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionType !== "spring" ||
-            props.transitionConfigType === "default",
-        defaultValue: defaultProps.damping,
+    ...transitionOptionsWithPrefix(
+        "enter",
+        ({ transition }) => transition !== "autoanimate"
+    ),
+
+    exitTransition: {
+        title: "Exit Transition",
+        type: ControlType.Enum,
+        options: ["exitdissolve", "shrinkdissolve", "exitInstant"],
+        optionTitles: ["Dissolve", "Shrink", "Instant"],
+        defaultValue: defaultProps.exitTransition,
+        hidden: props => props.transition !== "autoanimate",
     },
 
-    mass: {
-        title: "Mass",
-        type: ControlType.Number,
-        step: 0.1,
-        min: 0,
-        max: 5,
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionType !== "spring" ||
-            props.transitionConfigType === "default",
-        defaultValue: defaultProps.mass,
-    },
+    ...transitionOptionsWithPrefix(
+        "exit",
+        ({ transition }) => transition !== "autoanimate"
+    ),
 
-    stiffness: {
-        title: "Stiffness",
+    staggerChildren: {
+        title: "Stagger",
         type: ControlType.Number,
-        min: 0,
-        max: 1000,
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionType !== "spring" ||
-            props.transitionConfigType === "default",
-        defaultValue: defaultProps.stiffness,
-    },
-
-    duration: {
-        title: "Duration",
-        type: ControlType.Number,
-        step: 0.1,
-        min: 0,
         displayStepper: true,
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionType !== "tween" ||
-            props.transitionConfigType === "default",
-        defaultValue: defaultProps.duration,
+        step: 0.01,
+        defaultValue: defaultProps.staggerChildren,
+        hidden: props => props.transition !== "autoanimate",
     },
 
-    ease: {
-        title: "Easing",
-        type: ControlType.Enum,
-        options: [
-            "custom",
-            "linear",
-            "easeIn",
-            "easeOut",
-            "easeInOut",
-            "circIn",
-            "circOut",
-            "circInOut",
-            "backIn",
-            "backOut",
-            "backInOut",
-            "anticipate",
-        ],
-        optionTitles: [
-            "Custom",
-            "linear",
-            "easeIn",
-            "easeOut",
-            "easeInOut",
-            "circIn",
-            "circOut",
-            "circInOut",
-            "backIn",
-            "backOut",
-            "backInOut",
-            "anticipate",
-        ],
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionType !== "tween" ||
-            props.transitionConfigType === "default",
-        defaultValue: defaultProps.ease,
-    },
-
-    customEase: {
-        title: " ",
-        type: ControlType.String,
-        hidden: props =>
-            props.transition === "instant" ||
-            props.transitionType !== "tween" ||
-            props.transitionConfigType === "default" ||
-            props.ease !== "custom",
-        defaultValue: defaultProps.customEase,
+    delayChildren: {
+        title: "Delay",
+        type: ControlType.Number,
+        displayStepper: true,
+        step: 0.1,
+        defaultValue: defaultProps.delayChildren,
+        hidden: props => props.transition !== "autoanimate",
     },
 })
 

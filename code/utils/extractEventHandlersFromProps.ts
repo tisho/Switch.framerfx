@@ -1,5 +1,10 @@
-import { eventTriggerNames, keyEventTriggerNames } from "./controls"
-import { handleTrigger } from "./actions"
+import {
+    eventTriggerNames,
+    keyEventTriggerNames,
+    automaticEventTriggerNames,
+} from "../controls"
+import { handleTrigger } from "../actions"
+import { getGlobal } from "reactn"
 
 type EventHandlers = {
     [key: string]: Function
@@ -12,12 +17,18 @@ type KeyEvent = {
     handler: Function
 }
 
+type AutomaticEvent = {
+    delay: number
+    handler: Function
+}
+
 export function extractEventHandlersFromProps(
     props,
     switchControls,
     sanitizedIdentifier
-): [EventHandlers, KeyEvent[]] {
+): [EventHandlers, KeyEvent[], AutomaticEvent[]] {
     const keyEvents = []
+    const automaticEvents = []
     const eventHandlers = eventTriggerNames.reduce((handlers, event) => {
         const action = props[`${event}Action`]
         const handler = (...args) => {
@@ -79,11 +90,19 @@ export function extractEventHandlersFromProps(
                     keyEvents.push({ hotkey, options, handler })
                 }
             }
+        } else if (automaticEventTriggerNames.indexOf(event) !== -1) {
+            if (action !== "unset") {
+                const delay = props[`${event}Delay`]
+                const delayedHandler = () => {
+                    setTimeout(handler, delay * 1000)
+                }
+                automaticEvents.push({ delay, handler: delayedHandler })
+            }
         } else {
             handlers[event] = handler
         }
         return handlers
     }, {})
 
-    return [eventHandlers, keyEvents]
+    return [eventHandlers, keyEvents, automaticEvents]
 }

@@ -23,3 +23,9 @@ export function UnlockSlider(): Override {
         shouldTrigger: (e, { point }) => point.x >= dragThreshold,
     }
 }
+
+export function ScaleDown(): Override {
+    return {
+        whileTap: { scale: 0.8 },
+    }
+}

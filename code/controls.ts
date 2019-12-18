@@ -1,8 +1,9 @@
 import { ControlType, PropertyControls } from "framer"
 
 export const keyEventTriggerNames = ["onKeyDown", "onKeyUp"]
-
+export const automaticEventTriggerNames = ["afterDelay"]
 export const eventTriggerNames = [
+    ...automaticEventTriggerNames,
     "onTap",
     "onTapStart",
     "onTapCancel",
@@ -17,6 +18,7 @@ export const eventTriggerTitles = {
     onTap: "On Tap",
     onTapStart: "Tap Start",
     onTapCancel: "Tap Cancel",
+    afterDelay: "After Delay",
     onHoverStart: "Hover Start",
     onHoverEnd: "Hover End",
     onDragStart: "Drag Start",
@@ -30,12 +32,19 @@ export const eventTriggerProps = [
     ...eventTriggerNames.map(name => `${name}Action`),
     ...eventTriggerNames.map(name => `${name}SpecificIndex`),
     ...keyEventTriggerNames.map(name => `${name}Key`),
+    ...automaticEventTriggerNames.map(name => `${name}Delay`),
 ]
 
 export const keyEventTriggerProps = [
     ...keyEventTriggerNames.map(name => `${name}Action`),
     ...keyEventTriggerNames.map(name => `${name}SpecificIndex`),
     ...keyEventTriggerNames.map(name => `${name}Key`),
+]
+
+export const automaticEventTriggerProps = [
+    ...automaticEventTriggerNames.map(name => `${name}Action`),
+    ...automaticEventTriggerNames.map(name => `${name}SpecificIndex`),
+    ...automaticEventTriggerNames.map(name => `${name}Delay`),
 ]
 
 export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.reduce(
@@ -69,6 +78,19 @@ export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.
                 title: "↳ Key",
                 type: ControlType.String,
                 defaultValue: "",
+                hidden: props =>
+                    props.isInteractive === false ||
+                    props[`${trigger}Action`] === "unset",
+            }
+        }
+
+        if (automaticEventTriggerNames.indexOf(trigger) !== -1) {
+            res[`${trigger}Delay`] = {
+                title: "↳ Delay",
+                type: ControlType.Number,
+                displayStepper: true,
+                step: 0.1,
+                defaultValue: 0,
                 hidden: props =>
                     props.isInteractive === false ||
                     props[`${trigger}Action`] === "unset",

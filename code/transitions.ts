@@ -1,18 +1,26 @@
-export const transitionOptionsFromProps = props => {
-    if (props.transitionType === "tween") {
+import { prefixPropName } from "./utils/propNameHelpers"
+
+export const transitionOptionsFromProps = (props, prefix = null) => {
+    const getProp = n => props[prefixPropName(n, prefix)]
+    const type = getProp("transitionType")
+
+    if (type === "tween") {
         return {
             type: "tween",
-            duration: props.duration,
-            ease: props.ease === "custom" ? props.customEase : props.ease,
+            duration: getProp("duration"),
+            ease:
+                getProp("ease") === "custom"
+                    ? getProp("customEase")
+                    : getProp("ease"),
         }
     }
 
-    if (props.transitionType === "spring") {
+    if (type === "spring") {
         return {
             type: "spring",
-            damping: props.damping,
-            mass: props.mass,
-            stiffness: props.stiffness,
+            damping: getProp("damping"),
+            mass: getProp("mass"),
+            stiffness: getProp("stiffness"),
         }
     }
 
@@ -26,6 +34,7 @@ export const DEFAULT_SPRING = {
     stiffness: 500,
 }
 export const DEFAULT_TWEEN = { type: "tween", ease: "easeInOut", duration: 0.3 }
+
 export const TRANSITIONS = {
     instant: (childProps, containerProps) => ({
         initial: { opacity: 0 },
@@ -285,5 +294,165 @@ export const TRANSITIONS = {
             transitionConfigType === "default"
                 ? DEFAULT_SPRING
                 : transitionOptionsFromProps(containerProps),
+    }),
+    morph: (
+        childProps,
+        {
+            transitionConfigType,
+            staggerChildren,
+            delayChildren,
+            ...containerProps
+        }
+    ) => ({
+        transition: {
+            ...(transitionConfigType === "default"
+                ? DEFAULT_SPRING
+                : transitionOptionsFromProps(containerProps)),
+            staggerChildren,
+            delayChildren,
+        },
+    }),
+    enterdissolve: (
+        childProps,
+        { enterTransitionConfigType, ...containerProps },
+        {
+            transitionKey: tkey,
+            useAbsolutePositioning,
+            sourceRect: rect,
+            ...transitionOptions
+        }
+    ) => {
+        if (!useAbsolutePositioning) {
+            return TRANSITIONS.growdissolve(
+                childProps,
+                { enterTransitionConfigType, ...containerProps },
+                {
+                    transitionKey: tkey,
+                    useAbsolutePositioning,
+                    sourceRect: rect,
+                    ...transitionOptions,
+                }
+            )
+        }
+
+        return {
+            variants: {
+                [`__switch_initial_${tkey}`]: { opacity: 0, display: "block" },
+                [`__switch_next_${tkey}`]: {
+                    opacity: [0, 1],
+                    display: "block",
+                    width: [rect.width, rect.width],
+                    height: [rect.height, rect.height],
+                },
+            },
+            initial: `__switch_initial_${tkey}`,
+            animate: `__switch_next_${tkey}`,
+            transition:
+                enterTransitionConfigType === "default"
+                    ? DEFAULT_TWEEN
+                    : transitionOptionsFromProps(containerProps, "enter"),
+        }
+    },
+    exitdissolve: (
+        childProps,
+        { exitTransitionConfigType, ...containerProps },
+        { transitionKey: tkey, useAbsolutePositioning, ...transitionOptions }
+    ) => {
+        if (!useAbsolutePositioning) {
+            return TRANSITIONS.shrinkdissolve(
+                childProps,
+                { exitTransitionConfigType, ...containerProps },
+                {
+                    transitionKey: tkey,
+                    useAbsolutePositioning,
+                    ...transitionOptions,
+                }
+            )
+        }
+
+        return {
+            variants: {
+                [`__switch_initial_${tkey}`]: { opacity: 1 },
+                [`__switch_next_${tkey}`]: {
+                    opacity: [1, 0],
+                    transitionEnd: { display: "none" },
+                },
+            },
+            initial: `__switch_initial_${tkey}`,
+            animate: `__switch_next_${tkey}`,
+            transition:
+                exitTransitionConfigType === "default"
+                    ? DEFAULT_TWEEN
+                    : transitionOptionsFromProps(containerProps, "exit"),
+        }
+    },
+    growdissolve: (
+        childProps,
+        { enterTransitionConfigType, ...containerProps },
+        { transitionKey: tkey, sourceRect: rect }
+    ) => ({
+        variants: {
+            [`__switch_initial_${tkey}`]: {
+                opacity: 0,
+                width: 0,
+                height: 0,
+                display: "block",
+            },
+            [`__switch_next_${tkey}`]: {
+                opacity: 1,
+                width: [0, rect.width],
+                height: [0, rect.height],
+                display: "block",
+            },
+        },
+        initial: `__switch_initial_${tkey}`,
+        animate: `__switch_next_${tkey}`,
+        transition:
+            enterTransitionConfigType === "default"
+                ? DEFAULT_TWEEN
+                : transitionOptionsFromProps(containerProps, "enter"),
+    }),
+    shrinkdissolve: (
+        childProps,
+        { exitTransitionConfigType, ...containerProps },
+        { transitionKey: tkey, sourceRect: rect }
+    ) => ({
+        variants: {
+            [`__switch_next_${tkey}`]: { opacity: 0, width: 0, height: 0 },
+        },
+        animate: `__switch_next_${tkey}`,
+        transition:
+            exitTransitionConfigType === "default"
+                ? DEFAULT_TWEEN
+                : transitionOptionsFromProps(containerProps, "exit"),
+    }),
+    enterInstant: (childProps, containerProps, { transitionKey: tkey }) => ({
+        variants: {
+            [`__switch_initial_${tkey}`]: {
+                opacity: 0,
+                display: "block",
+            },
+            [`__switch_next_${tkey}`]: {
+                opacity: 1,
+                display: "block",
+            },
+        },
+        initial: `__switch_initial_${tkey}`,
+        animate: `__switch_next_${tkey}`,
+        transition: { type: "tween", ease: "linear", duration: 0 },
+    }),
+    exitInstant: (childProps, containerProps, { transitionKey: tkey }) => ({
+        variants: {
+            [`__switch_initial_${tkey}`]: {
+                opacity: 1,
+            },
+            [`__switch_next_${tkey}`]: {
+                opacity: 0,
+                transitionEnd: { display: "none" },
+            },
+        },
+        initial: `__switch_initial_${tkey}`,
+        animate: `__switch_next_${tkey}`,
+        transition: { type: "tween", ease: "linear", duration: 0 },
     }),
 }
