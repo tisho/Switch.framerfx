@@ -6,11 +6,13 @@ const nodeTypeMap = {
     Frame: "Frame",
     Text: "Text",
     Vector: "Vector",
+    VectorGroup: "VectorGroup",
     VectorWrapper: "VectorWrapper",
     StackContainer: "StackContainer",
     Stack: "Stack",
     ComponentContainer: "ComponentContainer",
     SVG: "SVG",
+    Unknown: "Unknown",
 }
 
 // The Switch doesn't support animating the hierarchy of SVG nodes,
@@ -59,32 +61,48 @@ export const getNodeType = node => {
     const name = node.type.name
 
     if (name === "Frame") {
-        // if only child is a vector root node, this is a vector wrapper
+        // if all children are of type Vector or VectorGroup, this is a vector wrapper
         const children = React.Children.toArray(node.props.children || [])
-        if (children.length === 1) {
-            const onlyChildType = getNodeType(children[0])
-            if (onlyChildType === "Vector") {
-                return nodeTypeMap.VectorWrapper
-            }
+        if (
+            children.length > 0 &&
+            children.every(
+                child =>
+                    [nodeTypeMap.Vector, nodeTypeMap.VectorGroup].indexOf(
+                        getNodeType(child)
+                    ) !== -1
+            )
+        ) {
+            return nodeTypeMap.VectorWrapper
         }
 
         return nodeTypeMap.Frame
     }
 
-    if (
-        name === "ComponentContainer" &&
-        node.props.componentIdentifier === "framer/Stack"
-    ) {
+    if (name === "ComponentContainer" && isStack(node)) {
         return nodeTypeMap.StackContainer
     }
 
     // Frame with Overrides
-    if ((name === "s" || typeof name === "undefined") && isFrameLike(node)) {
-        return "Frame"
+    if (
+        name === "s" ||
+        name.match(/^WithOverrides?\((Frame|Stack)/) ||
+        typeof name === "undefined"
+    ) {
+        if (isStack(node)) {
+            return nodeTypeMap.StackContainer
+        }
+
+        if (isFrameLike(node)) {
+            return nodeTypeMap.Frame
+        }
     }
 
-    return nodeTypeMap[name] || "Unknown"
+    return nodeTypeMap[name] || nodeTypeMap.Unknown
 }
+
+export const isStack = node =>
+    "componentIdentifier" in node.props &&
+    node.props.componentIdentifier === "framer/Stack"
 
 export const isSameComponent = (source, target) => {
     return source.props.componentIdentifier === target.props.componentIdentifier
