@@ -31,6 +31,7 @@ export const eventTriggerProps = [
     ...eventTriggerNames,
     ...eventTriggerNames.map(name => `${name}Action`),
     ...eventTriggerNames.map(name => `${name}SpecificIndex`),
+    ...eventTriggerNames.map(name => `${name}SpecificName`),
     ...keyEventTriggerNames.map(name => `${name}Key`),
     ...automaticEventTriggerNames.map(name => `${name}Delay`),
 ]
@@ -38,12 +39,14 @@ export const eventTriggerProps = [
 export const keyEventTriggerProps = [
     ...keyEventTriggerNames.map(name => `${name}Action`),
     ...keyEventTriggerNames.map(name => `${name}SpecificIndex`),
+    ...keyEventTriggerNames.map(name => `${name}SpecificName`),
     ...keyEventTriggerNames.map(name => `${name}Key`),
 ]
 
 export const automaticEventTriggerProps = [
     ...automaticEventTriggerNames.map(name => `${name}Action`),
     ...automaticEventTriggerNames.map(name => `${name}SpecificIndex`),
+    ...automaticEventTriggerNames.map(name => `${name}SpecificName`),
     ...automaticEventTriggerNames.map(name => `${name}Delay`),
 ]
 
@@ -52,10 +55,11 @@ export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.
         res[`${trigger}Action`] = {
             title: eventTriggerTitles[trigger] || trigger,
             type: ControlType.Enum,
-            options: ["unset", "specific", "previous", "next"],
+            options: ["unset", "specific", "specific-name", "previous", "next"],
             optionTitles: [
                 "Not Set",
-                "Specific State",
+                "Specific State Index",
+                "Specific State Name",
                 "Previous State",
                 "Next State",
             ],
@@ -71,6 +75,15 @@ export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.
             hidden: props =>
                 props.isInteractive === false ||
                 props[`${trigger}Action`] !== "specific",
+        }
+
+        res[`${trigger}SpecificName`] = {
+            title: "↳ State",
+            type: ControlType.String,
+            defaultValue: "",
+            hidden: props =>
+                props.isInteractive === false ||
+                props[`${trigger}Action`] !== "specific-name",
         }
 
         if (keyEventTriggerNames.indexOf(trigger) !== -1) {

@@ -13,6 +13,13 @@ export function handleTrigger(
         setSwitchStateIndex(target, targetState)
     }
 
+    if (action === "specific-name") {
+        const index = states.indexOf(targetState)
+        if (index !== -1) {
+            setSwitchStateIndex(target, index)
+        }
+    }
+
     if (action === "next") {
         setSwitchStateIndex(
             target,

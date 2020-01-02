@@ -58,7 +58,9 @@ export function extractEventHandlersFromProps(
                     switchControls,
                     sanitizedIdentifier,
                     action,
-                    props[`${event}SpecificIndex`]
+                    action === "specific-name"
+                        ? props[`${event}SpecificName`]
+                        : props[`${event}SpecificIndex`]
                 )
             }
         }

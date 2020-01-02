@@ -31,6 +31,14 @@ export const useSwitch: SwitchControls = () => {
         setStore(store)
     }
 
+    const setSwitchState = (identifier: string, state: string) => {
+        const states = getAllSwitchStates(identifier)
+        const index = states.indexOf(state)
+        if (index !== -1) {
+            setSwitchStateIndex(identifier, index)
+        }
+    }
+
     const setNextSwitchStateIndex = (
         identifier: string,
         options: PrevNextSwitchOptions = {}
@@ -85,6 +93,7 @@ export const useSwitch: SwitchControls = () => {
         getSwitches,
         getSwitchStateIndex,
         getAllSwitchStates,
+        setSwitchState,
         setSwitchStateIndex,
         setNextSwitchStateIndex,
         setPreviousSwitchStateIndex,
