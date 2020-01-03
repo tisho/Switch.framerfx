@@ -6,13 +6,15 @@
 
 # Latest Release
 
-12/15/2019
+1/2/2020
 
--   **NEW: Auto-Animate (Magic Move)** added to the list of available transitions between states. Read on to [find out how Auto Animate works](#auto-animating-between-states), and definitely let me know if you spot any bugs when using the auto-animate transition.
--   NEW: Switch names can now be set to "Auto" if you never intend to set their state from a hotspot or through code, and don't want the Switch state to be shared with another Switch.
--   NEW: Added "After Delay" to the list of available triggers, which lets you switch to another state after a specified amount of time. The time is counted from the moment the hotspot (`SwitchToStateAction`) or the Switch component is mounted on the current view.
--   NEW: Added two new actions available through the `useSwitch` hook: `setNextSwitchStateIndex` and `setPreviousSwitchStateIndex`, allowing you to quickly set the next/previous state of a Switch.
--   FIX: Any time a Switch updated its state, all Switches in view would re-render, regardless of whether the update was intended for them, or not. This is no longer the case.
+-   NEW: Named states. You can now refer to states by the name you've given them in the Layers panel, instead of by numerical index. You can now set a trigger action to "Specific State Name" and just type the name of the layer for the target state on your canvas. Note that default layer names, such as "Frame", are not supported, so make sure you explicitly set a name in the Layers panel.
+-   NEW: Related to the named states support, you can now use the new `setSwitchState` function from code to set a Switch to either a named state, or a numerical index. See more in the [Using Switch in Code](#using-switch-in-code) section.
+-   FIX: Auto-animate transitions between Text and Graphic layers should now look noticeably better.
+-   FIX: Auto-animate transitions between Stacks with Overrides applied are now handled correctly.
+-   FIX: Auto-animate transitions between more complex Graphic layers sometimes produced odd animations. This should now be fixed.
+
+**[→ See past releases](#past-releases)**
 
 # Examples
 
@@ -196,7 +198,7 @@ Use these in Overrides, or when you use the `Switch` component from code.
 To control Switches from code, first import the `useSwitch` hook at the top of your file:
 
 ```
-import { useSwitch } from "@framer/tishogeorgiev.switch"
+import { useSwitch } from "@framer/tishogeorgiev.switch/code"
 ```
 
 Then call the `useSwitch()` hook in your code component or override:
@@ -207,7 +209,7 @@ export function SwitchButton(): Override {
 
     return {
         onTap: () => {
-            controls.setSwitchStateIndex("sharedSwitch", 1)
+            controls.setSwitchState("sharedSwitch", 1)
         },
     }
 }
@@ -215,7 +217,7 @@ export function SwitchButton(): Override {
 
 Note: you can **only** call this hook from inside a React component or override. Calling it from a different place in your code could result in unexpected behavior. [Read more about the rules of hook usage](https://reactjs.org/docs/hooks-rules.html).
 
-The `useSwitch` hook will return a controls object, containing the following functions:
+The `useSwitch` hook will return a controls object with the following functions:
 
 -   `controls.getSwitches() => string[]`
 
@@ -225,17 +227,25 @@ The `useSwitch` hook will return a controls object, containing the following fun
 
     Returns the index of the current state of a Switch.
 
+-   `controls.setSwitchState(identifier: string, state: string | number)`
+
+    Sets the current state of a Switch. You can use either the name of the target state (which will be the same as the name of its layer in the Layers panel), or its numerical state index.
+
 -   `controls.setSwitchStateIndex(identifier: string, state: number)`
 
-    Sets the current state index of a Switch. If the index isn't valid, it will still be accepted, but the targeted Switch will remain set to its last known good state.
+    **(Deprecated in favor of `setSwitchState`)** Sets the current state index of a Switch. If the index isn't valid, it will still be accepted, but the targeted Switch will remain set to its last known good state.
 
--   `controls.setNextSwitchStateIndex(identifier: string, options: { wrapAround?: boolean } = {})`
+-   `controls.setNextSwitchState(identifier: string, options: { wrapAround?: boolean } = {})`
 
-    Sets the current state index of a Switch to the next available index. The second `options` parameter is optional, and allows you to specify whether the index will wrap around if trying to advance past the last one. By default, `wrapAround` is true.
+    Sets the current state of a Switch to the next available one (the order is the same as the order in which you connected the states). The second `options` parameter is optional, and allows you to specify whether the state will wrap around if trying to advance past the last one. By default, `wrapAround` is true.
 
--   `controls.setPreviousSwitchStateIndex(identifier: string, options: { wrapAround?: boolean } = {})`
+    Compatibility note: This method used to be called `setNextSwitchStateIndex` in versions prior to v1.8.0. The old name is still supported.
 
-    Sets the current state index of a Switch to the previous index (one behind the current one). The second `options` parameter is optional, and allows you to specify whether the index will wrap around if trying to go back beyond the first one. By default, `wrapAround` is true.
+-   `controls.setPreviousSwitchState(identifier: string, options: { wrapAround?: boolean } = {})`
+
+    Sets the current state of a Switch to the previous one (one behind the current one). The second `options` parameter is optional, and allows you to specify whether the state will wrap around if trying to go back beyond the first one. By default, `wrapAround` is true.
+
+    Compatibility note: This method used to be called `setPreviousSwitchStateIndex` in versions prior to v1.8.0. The old name is still supported.
 
 -   `controls.getAllSwitchStates(identifier: string) => string[]`
 
@@ -246,6 +256,14 @@ The `useSwitch` hook will return a controls object, containing the following fun
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+12/15/2019
+
+-   **NEW: Auto-Animate (Magic Move)** added to the list of available transitions between states. Read on to [find out how Auto Animate works](#auto-animating-between-states), and definitely let me know if you spot any bugs when using the auto-animate transition.
+-   NEW: Switch names can now be set to "Auto" if you never intend to set their state from a hotspot or through code, and don't want the Switch state to be shared with another Switch.
+-   NEW: Added "After Delay" to the list of available triggers, which lets you switch to another state after a specified amount of time. The time is counted from the moment the hotspot (`SwitchToStateAction`) or the Switch component is mounted on the current view.
+-   NEW: Added two new actions available through the `useSwitch` hook: `setNextSwitchStateIndex` and `setPreviousSwitchStateIndex`, allowing you to quickly set the next/previous state of a Switch.
+-   FIX: Any time a Switch updated its state, all Switches in view would re-render, regardless of whether the update was intended for them, or not. This is no longer the case.
 
 12/8/2019
 
