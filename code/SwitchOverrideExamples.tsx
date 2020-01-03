@@ -1,4 +1,5 @@
 import { Override, useAnimation } from "framer"
+import { useSwitch } from "./"
 
 export function UnlockSlider(): Override {
     const controls = useAnimation()
@@ -27,5 +28,15 @@ export function UnlockSlider(): Override {
 export function ScaleDown(): Override {
     return {
         whileTap: { scale: 0.8 },
+    }
+}
+
+export function ExternalSwitchControl(): Override {
+    const controls = useSwitch()
+
+    return {
+        onTap: () => {
+            controls.setSwitchState("sharedFancyTabNav", "Middle Focused")
+        },
     }
 }

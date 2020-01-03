@@ -31,12 +31,27 @@ export const useSwitch: SwitchControls = () => {
         setStore(store)
     }
 
-    const setSwitchState = (identifier: string, state: string) => {
+    const setSwitchState = (identifier: string, state: string | number) => {
         const states = getAllSwitchStates(identifier)
-        const index = states.indexOf(state)
-        if (index !== -1) {
-            setSwitchStateIndex(identifier, index)
+        const index = typeof state === "number" ? state : states.indexOf(state)
+
+        if (index === -1) {
+            console.warn(
+                `<Switch#${identifier}> Requested state name "${state}" wasn't found in the list of available states for this instance: ${states.join(
+                    ", "
+                )}.\nMake sure the name matches the name of the state in the Layers panel exactly.`
+            )
+            return
         }
+
+        if (typeof states[index] === "undefined") {
+            console.warn(
+                `<Switch#${identifier}> Requested state index "${index}" isn't valid. Number of states for this instance: ${states.length}.`
+            )
+            return
+        }
+
+        setSwitchStateIndex(identifier, index)
     }
 
     const setNextSwitchStateIndex = (
@@ -96,7 +111,9 @@ export const useSwitch: SwitchControls = () => {
         setSwitchState,
         setSwitchStateIndex,
         setNextSwitchStateIndex,
+        setNextSwitchState: setNextSwitchStateIndex,
         setPreviousSwitchStateIndex,
+        setPreviousSwitchState: setPreviousSwitchStateIndex,
         registerSwitchStates,
     }
 }
