@@ -210,6 +210,15 @@ function _Switch(props) {
                 })
             }
 
+            if (
+                transition === "cross-dissolve-enter" ||
+                transition === "cross-dissolve-exit"
+            ) {
+                return TRANSITIONS.crossdissolve(source.props, props, {
+                    direction: transition,
+                })
+            }
+
             return TRANSITIONS.morph(source.props, props)
         },
         [props]

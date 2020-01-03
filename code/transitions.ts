@@ -312,6 +312,55 @@ export const TRANSITIONS = {
             delayChildren,
         },
     }),
+    crossdissolve: (
+        childProps,
+        {
+            transitionConfigType,
+            staggerChildren,
+            delayChildren,
+            ...containerProps
+        },
+        { direction }
+    ) => {
+        const options =
+            transitionConfigType === "default"
+                ? DEFAULT_SPRING
+                : transitionOptionsFromProps(containerProps)
+
+        // When using a tween transition, we intentionally give opacity a different
+        // curve, which aims to maximize the time that both the appearing and disappearing
+        // elements stay at a higher opacity value. This works around the issue when in the
+        // middle of the cross-dissolve, both elements have an opacity of 50% for a combined
+        // max alpha value of 0.75. The observable effect is that of the element dimming/blinking
+        // out of existence and then back in, rather than smoothly cross-fading between states.
+        // A true cross-dissolve would have us paint the blended value of the front/back layer,
+        // preserving the alpha of the target, but hopefully this is a good approximation.
+        const opacity =
+            options.type === "tween"
+                ? {
+                      type: "tween",
+                      // using a blend of easeIn/easeOut means that in the middle
+                      // of the transition, both elements will be at >50% opacity
+                      ease:
+                          direction === "cross-dissolve-enter"
+                              ? "easeOut"
+                              : "easeIn",
+                  }
+                : options
+
+        if (options["duration"]) {
+            opacity["duration"] = options["duration"]
+        }
+
+        return {
+            transition: {
+                opacity,
+                default: options,
+                staggerChildren,
+                delayChildren,
+            },
+        }
+    },
     enterdissolve: (
         childProps,
         { enterTransitionConfigType, ...containerProps },

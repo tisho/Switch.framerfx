@@ -282,7 +282,11 @@ const _AutoAnimatedState = ({
             // skip animation entirely if we're not transitioning to a new state
             controls.set(nextVariantName)
         } else {
-            controls.start(nextVariantName)
+            // delay animation until after the next paint / layout, so animations
+            // can start from the correct values
+            requestAnimationFrame(() =>
+                setTimeout(() => controls.start(nextVariantName), 0)
+            )
         }
     }, [source, target, controls, initialVariantName, nextVariantName])
 
@@ -298,6 +302,8 @@ const _AutoAnimatedState = ({
                 ...targetPositionAndSizeProps,
                 opacity: 1,
                 display: "block",
+                scaleX: 1,
+                scaleY: 1,
                 translateX: [0, 0],
             },
         }
@@ -308,16 +314,30 @@ const _AutoAnimatedState = ({
                 display: "block",
             },
             [nextVariantName]: {
-                ...targetPositionAndSizeProps,
+                ...pick(targetPositionAndSizeProps, ["top", "left"]),
+                scaleX:
+                    targetPositionAndSizeProps.width /
+                    sourcePositionAndSizeProps.width,
+                scaleY:
+                    targetPositionAndSizeProps.height /
+                    sourcePositionAndSizeProps.height,
                 opacity: 0,
-                transitionEnd: { translateX: -9999 },
+                transitionEnd: {
+                    translateX: -9999,
+                },
             },
         }
 
-        const transitionProps = transitionPropsForElement({
+        const enterTransitionProps = transitionPropsForElement({
             source,
             target,
-            transition: "morph",
+            transition: "cross-dissolve-enter",
+        })
+
+        const exitTransitionProps = transitionPropsForElement({
+            source,
+            target,
+            transition: "cross-dissolve-exit",
         })
 
         const key = getSourceKey(sourceKey, source.key)
@@ -325,14 +345,23 @@ const _AutoAnimatedState = ({
         let enteringChildProps = {
             key: direction === 1 ? `__enter_${key}` : `__exit_${key}`,
             ...propsForPositionReset,
-            ...sourcePositionAndSizeProps,
+            ...pick(sourcePositionAndSizeProps, ["top", "left"]),
+            ...pick(targetPositionAndSizeProps, ["width", "height"]),
+            originX: 0,
+            originY: 0,
+            scaleX:
+                sourcePositionAndSizeProps.width /
+                targetPositionAndSizeProps.width,
+            scaleY:
+                sourcePositionAndSizeProps.height /
+                targetPositionAndSizeProps.height,
             variants: {
                 ...(target.props.variants || {}),
                 ...enteringChildVariants,
             },
             initial: initialVariantName,
             animate: controls,
-            ...transitionProps,
+            ...enterTransitionProps,
         }
 
         enteringChildProps = useAbsolutePositioning
@@ -343,13 +372,17 @@ const _AutoAnimatedState = ({
             key: direction === 1 ? `__exit_${key}` : `__enter_${key}`,
             ...propsForPositionReset,
             ...sourcePositionAndSizeProps,
+            originX: 0,
+            originY: 0,
+            scaleX: 1,
+            scaleY: 1,
             variants: {
                 ...(source.props.variants || {}),
                 ...exitingChildVariants,
             },
             initial: initialVariantName,
             animate: controls,
-            ...transitionProps,
+            ...exitTransitionProps,
         }
 
         exitingChildProps = useAbsolutePositioning
