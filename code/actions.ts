@@ -17,6 +17,12 @@ export function handleTrigger(
         const index = states.indexOf(targetState)
         if (index !== -1) {
             setSwitchStateIndex(target, index)
+        } else {
+            console.warn(
+                `<Switch> Requested state name "${targetState}" wasn't found in the list of available states for this instance: ${states.join(
+                    ", "
+                )}.\nMake sure the name matches the name of the state in the Layers panel exactly.`
+            )
         }
     }
 
