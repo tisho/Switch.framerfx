@@ -6,6 +6,10 @@
 
 # Latest Release
 
+1/8/2020
+
+-   FIX: Fixed transitions that include colors defined as shared colors (thanks @CharlieWandCo).
+
 1/2/2020
 
 -   NEW: Named states. You can now refer to states by the name you've given them in the Layers panel, instead of by numerical index. You can now set a trigger action to "Specific State Name" and just type the name of the layer for the target state on your canvas. Note that default layer names, such as "Frame", are not supported, so make sure you explicitly set a name in the Layers panel.

@@ -9,9 +9,18 @@ export const getOpacity = style =>
 
 export const getRotate = style => style.rotate
 
+const cssColorVarRegex = /^var\([^,]*, (.*)\)/
+
 export const getColorType = colorObject => {
     if (typeof colorObject === "undefined" || colorObject === null) {
         return "none"
+    }
+
+    if (
+        typeof colorObject === "string" &&
+        colorObject.match(cssColorVarRegex)
+    ) {
+        return "plain"
     }
 
     if ("__class" in colorObject && colorObject.__class === "LinearGradient") {
@@ -204,7 +213,8 @@ export const isBackgroundTransitionAnimatable = (source, target) => {
     )
 }
 
-export const transparent = color => Color.toString(Color.alpha(Color(color), 0))
+export const transparent = color =>
+    Color.toString(Color.alpha(toColor(color), 0))
 
 export const linearGradientFromColor = (color, angle = 0) => {
     return `linear-gradient(${angle}deg, ${color} 0%, ${color} 100%)`
@@ -218,14 +228,30 @@ export const radialGradientFromColor = (
     return `radial-gradient(${shape} at ${position}, ${color} 0%, ${color} 100%)`
 }
 
+const toColor = color => {
+    if (typeof color === "string" && color.match(cssColorVarRegex)) {
+        const matches = color.match(cssColorVarRegex)
+        return Color(matches[1])
+    }
+
+    return Color(color)
+}
+
 export const getPlainBackgroundColor = style => {
-    const color =
+    let color =
         typeof style.backgroundColor === "undefined" ||
         style.backgroundColor === null
             ? "transparent"
             : style.backgroundColor
 
-    return Color.toString(Color(color))
+    if (
+        typeof style.background === "string" &&
+        style.background.match(cssColorVarRegex)
+    ) {
+        color = style.background
+    }
+
+    return Color.toString(toColor(color))
 }
 
 export const toCssGradientWithRgbStops = (
@@ -237,8 +263,8 @@ export const toCssGradientWithRgbStops = (
         ...stop,
         value: Color.toString(
             targetAlpha === null
-                ? Color(stop.value)
-                : Color.alpha(Color(stop.value), targetAlpha)
+                ? toColor(stop.value)
+                : Color.alpha(toColor(stop.value), targetAlpha)
         ),
     }))
 
