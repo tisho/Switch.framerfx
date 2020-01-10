@@ -6,6 +6,11 @@
 
 # Latest Release
 
+1/10/2020
+
+-   FIX: Fixed an issue where an entering or cross-dissolving element would always animate to opacity: 1, even if its target opacity was different.
+-   FIX: Fixed an issue where the position of an entering element wasn't computed correctly when its container itself was moving/resizing.
+
 1/8/2020
 
 -   FIX: Fixed transitions that include colors defined as shared colors (thanks @CharlieWandCo).
