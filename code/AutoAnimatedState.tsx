@@ -300,7 +300,7 @@ const _AutoAnimatedState = ({
             },
             [nextVariantName]: {
                 ...targetPositionAndSizeProps,
-                opacity: 1,
+                opacity: getOpacity(target.props.style || {}),
                 display: "block",
                 scaleX: 1,
                 scaleY: 1,
@@ -310,7 +310,7 @@ const _AutoAnimatedState = ({
 
         const exitingChildVariants = {
             [initialVariantName]: {
-                opacity: 1,
+                opacity: getOpacity(source.props.style || {}),
                 display: "block",
             },
             [nextVariantName]: {

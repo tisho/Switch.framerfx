@@ -1,4 +1,5 @@
 import { prefixPropName } from "./utils/propNameHelpers"
+import { getOpacity } from "./utils/styleParsing"
 
 export const transitionOptionsFromProps = (props, prefix = null) => {
     const getProp = n => props[prefixPropName(n, prefix)]
@@ -388,7 +389,7 @@ export const TRANSITIONS = {
             variants: {
                 [`__switch_initial_${tkey}`]: { opacity: 0, display: "block" },
                 [`__switch_next_${tkey}`]: {
-                    opacity: [0, 1],
+                    opacity: [0, getOpacity(childProps.style || {})],
                     display: "block",
                     width: [rect.width, rect.width],
                     height: [rect.height, rect.height],
@@ -423,7 +424,7 @@ export const TRANSITIONS = {
             variants: {
                 [`__switch_initial_${tkey}`]: { opacity: 1 },
                 [`__switch_next_${tkey}`]: {
-                    opacity: [1, 0],
+                    opacity: [getOpacity(childProps.style || {}), 0],
                     transitionEnd: { display: "none" },
                 },
             },
@@ -448,7 +449,7 @@ export const TRANSITIONS = {
                 display: "block",
             },
             [`__switch_next_${tkey}`]: {
-                opacity: 1,
+                opacity: getOpacity(childProps.style || {}),
                 width: [0, rect.width],
                 height: [0, rect.height],
                 display: "block",
@@ -482,7 +483,7 @@ export const TRANSITIONS = {
                 display: "block",
             },
             [`__switch_next_${tkey}`]: {
-                opacity: 1,
+                opacity: getOpacity(childProps.style || {}),
                 display: "block",
             },
         },
@@ -493,7 +494,7 @@ export const TRANSITIONS = {
     exitInstant: (childProps, containerProps, { transitionKey: tkey }) => ({
         variants: {
             [`__switch_initial_${tkey}`]: {
-                opacity: 1,
+                opacity: getOpacity(childProps.style || {}),
             },
             [`__switch_next_${tkey}`]: {
                 opacity: 0,
