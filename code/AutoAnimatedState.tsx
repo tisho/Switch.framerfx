@@ -211,9 +211,13 @@ const _AutoAnimatedState = ({
         })
 
         if (enteringChildrenIds.indexOf(id) !== -1) {
+            const positionAndSizeInTarget = getNodeRect(
+                child,
+                targetPositionAndSizeProps
+            )
             let props = {
                 ...propsForPositionReset,
-                ...positionAndSize,
+                ...positionAndSizeInTarget,
                 ...transitionPropsForElement({
                     source: child,
                     sourceRect: positionAndSize,
