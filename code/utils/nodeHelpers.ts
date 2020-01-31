@@ -57,10 +57,28 @@ export const getNodeName = node => {
 }
 
 export const getNodeId = node => node.props.id
-export const getNodeType = node => {
-    const name = node.type.name
+export const getNodeTypeName = node => {
+    if (node.type) {
+        if ("name" in node.type) {
+            return node.type.name
+        }
 
-    if (name === "Frame") {
+        if (
+            "render" in node.type &&
+            typeof node.type.render === "function" &&
+            "name" in node.type.render
+        ) {
+            return node.type.render.name
+        }
+    }
+
+    return undefined
+}
+
+export const getNodeType = node => {
+    const name = getNodeTypeName(node)
+
+    if (name === "Frame" || name === "FrameWithMotion") {
         // if all children are of type Vector or VectorGroup, this is a vector wrapper
         const children = React.Children.toArray(node.props.children || [])
         if (
@@ -84,9 +102,10 @@ export const getNodeType = node => {
 
     // Frame with Overrides
     if (
+        typeof name === "undefined" ||
         name === "s" ||
-        name.match(/^WithOverrides?\((Frame|Stack)/) ||
-        typeof name === "undefined"
+        (typeof name === "string" &&
+            name.match(/^WithOverrides?\((Frame|Stack)/))
     ) {
         if (isStack(node)) {
             return nodeTypeMap.StackContainer
