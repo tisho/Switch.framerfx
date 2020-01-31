@@ -6,22 +6,9 @@
 
 # Latest Release
 
-1/10/2020
+1/31/2020
 
--   FIX: Fixed an issue where an entering or cross-dissolving element would always animate to opacity: 1, even if its target opacity was different.
--   FIX: Fixed an issue where the position of an entering element wasn't computed correctly when its container itself was moving/resizing.
-
-1/8/2020
-
--   FIX: Fixed transitions that include colors defined as shared colors (thanks @CharlieWandCo).
-
-1/2/2020
-
--   NEW: Named states. You can now refer to states by the name you've given them in the Layers panel, instead of by numerical index. You can now set a trigger action to "Specific State Name" and just type the name of the layer for the target state on your canvas. Note that default layer names, such as "Frame", are not supported, so make sure you explicitly set a name in the Layers panel.
--   NEW: Related to the named states support, you can now use the new `setSwitchState` function from code to set a Switch to either a named state, or a numerical index. See more in the [Using Switch in Code](#using-switch-in-code) section.
--   FIX: Auto-animate transitions between Text and Graphic layers should now look noticeably better.
--   FIX: Auto-animate transitions between Stacks with Overrides applied are now handled correctly.
--   FIX: Auto-animate transitions between more complex Graphic layers sometimes produced odd animations. This should now be fixed.
+-   FIX: Fixed auto-animate breaking in shared link previews on Framer Web (thanks @Alexis).
 
 **[→ See past releases](#past-releases)**
 
@@ -265,6 +252,23 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+1/10/2020
+
+-   FIX: Fixed an issue where an entering or cross-dissolving element would always animate to opacity: 1, even if its target opacity was different.
+-   FIX: Fixed an issue where the position of an entering element wasn't computed correctly when its container itself was moving/resizing.
+
+1/8/2020
+
+-   FIX: Fixed transitions that include colors defined as shared colors (thanks @CharlieWandCo).
+
+1/2/2020
+
+-   NEW: Named states. You can now refer to states by the name you've given them in the Layers panel, instead of by numerical index. You can now set a trigger action to "Specific State Name" and just type the name of the layer for the target state on your canvas. Note that default layer names, such as "Frame", are not supported, so make sure you explicitly set a name in the Layers panel.
+-   NEW: Related to the named states support, you can now use the new `setSwitchState` function from code to set a Switch to either a named state, or a numerical index. See more in the [Using Switch in Code](#using-switch-in-code) section.
+-   FIX: Auto-animate transitions between Text and Graphic layers should now look noticeably better.
+-   FIX: Auto-animate transitions between Stacks with Overrides applied are now handled correctly.
+-   FIX: Auto-animate transitions between more complex Graphic layers sometimes produced odd animations. This should now be fixed.
 
 12/15/2019
 
