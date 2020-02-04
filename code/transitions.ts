@@ -12,6 +12,8 @@ export const transitionOptionsFromProps = (props, prefix = null) => {
             ease:
                 getProp("ease") === "custom"
                     ? getProp("customEase")
+                          .split(/,\s+/)
+                          .map(parseFloat)
                     : getProp("ease"),
         }
     }

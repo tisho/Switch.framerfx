@@ -10173,11 +10173,11 @@
                   "value" : "rmLwatpGq"
                 }
               ],
-              "customEase" : "0.25, 0.1, 0.25, 1",
+              "customEase" : "0.455, 0.03, 0.515, 0.955",
               "damping" : 50,
               "delayChildren" : 0,
-              "duration" : 0.29999999999999999,
-              "ease" : "easeOut",
+              "duration" : 0.59999999999999998,
+              "ease" : "custom",
               "enterCustomEase" : "0.25, 0.1, 0.25, 1",
               "enterDamping" : 45,
               "enterDuration" : 0.29999999999999999,
@@ -10234,7 +10234,7 @@
               "stiffness" : 162,
               "transition" : "autoanimate",
               "transitionConfigType" : "custom",
-              "transitionType" : "spring"
+              "transitionType" : "tween"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
