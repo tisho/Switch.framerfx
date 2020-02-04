@@ -6,9 +6,10 @@
 
 # Latest Release
 
-1/31/2020
+2/4/2020
 
--   FIX: Fixed auto-animate breaking in shared link previews on Framer Web (thanks @Alexis).
+-   FIX: Fixed custom easing curves not working in tween transitions (thanks @David Ikuye).
+-   NEW: Added more easing curve presets, including most of the ones on https://easings.net. You can find them all under the Easing dropdown when customizing a tween transition.
 
 **[→ See past releases](#past-releases)**
 
@@ -252,6 +253,10 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+1/31/2020
+
+-   FIX: Fixed auto-animate breaking in shared link previews on Framer Web (thanks @Alexis).
 
 1/10/2020
 
