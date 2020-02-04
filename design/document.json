@@ -10177,7 +10177,7 @@
               "damping" : 50,
               "delayChildren" : 0,
               "duration" : 0.59999999999999998,
-              "ease" : "custom",
+              "ease" : "easeInSine",
               "enterCustomEase" : "0.25, 0.1, 0.25, 1",
               "enterDamping" : 45,
               "enterDuration" : 0.29999999999999999,
