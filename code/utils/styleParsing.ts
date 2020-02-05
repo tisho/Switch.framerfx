@@ -10,7 +10,9 @@ export const getOpacity = style =>
         : style.opacity
 
 export const getRotate = style =>
-    typeof style === "undefined" ? 0 : style.rotate
+    typeof style === "undefined" || typeof style.rotate === "undefined"
+        ? 0
+        : style.rotate
 
 const cssColorVarRegex = /^var\([^,]*, (.*)\)/
 
