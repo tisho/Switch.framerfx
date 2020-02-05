@@ -1,6 +1,7 @@
 import * as React from "react"
 import { calculateRect } from "./calculateRect"
 import { rectAsStyleProps } from "./styleParsing"
+import { randomID } from "./randomID"
 
 const nodeTypeMap = {
     Frame: "Frame",
@@ -142,6 +143,15 @@ export const getNodeRect = (node, parentSize) => {
     return rectAsStyleProps(rect)
 }
 
+export const nodeWithIdAndKey = node => {
+    let id = getNodeId(node)
+    id = typeof id === "undefined" || id === null ? randomID() : id
+    const key =
+        typeof node.key === "undefined" || node.key === null ? id : node.key
+
+    return React.cloneElement(node, { key, id })
+}
+
 export const getNodeChildren = node => {
     const nodeType = getNodeType(node)
     let children = node.props.children
@@ -151,5 +161,5 @@ export const getNodeChildren = node => {
         children = stack.props.children
     }
 
-    return React.Children.toArray(children)
+    return React.Children.toArray(children).map(nodeWithIdAndKey)
 }

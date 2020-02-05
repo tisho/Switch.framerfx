@@ -21,6 +21,7 @@ import {
     getNodeType,
     getNodeRect,
     getNodeChildren,
+    nodeWithIdAndKey,
     isNodeAnimatable,
     isSameComponent,
 } from "./utils/nodeHelpers"
@@ -50,6 +51,10 @@ const _AutoAnimatedState = ({
     const [id, _] = useState(randomID())
     const keySourceCache = keyCache || getCache(id)
     const getSourceKey = keySourceCache.getSourceKey
+
+    // Ensure both source and target have an id and key, even if they're auto-generated
+    source = nodeWithIdAndKey(source)
+    target = nodeWithIdAndKey(target)
 
     // The transition key will be used to create a unique name for the
     // initial/next variant used in animating the state transition.
