@@ -3,11 +3,14 @@ import { omit } from "./omit"
 import { equalizeArrayLength } from "./equalizeArrayLength"
 
 export const getOpacity = style =>
-    typeof style.opacity === "undefined" || style.opacity === null
+    typeof style === "undefined" ||
+    typeof style.opacity === "undefined" ||
+    style.opacity === null
         ? 1
         : style.opacity
 
-export const getRotate = style => style.rotate
+export const getRotate = style =>
+    typeof style === "undefined" ? 0 : style.rotate
 
 const cssColorVarRegex = /^var\([^,]*, (.*)\)/
 
@@ -239,12 +242,14 @@ const toColor = color => {
 
 export const getPlainBackgroundColor = style => {
     let color =
+        typeof style === "undefined" ||
         typeof style.backgroundColor === "undefined" ||
         style.backgroundColor === null
             ? "transparent"
             : style.backgroundColor
 
     if (
+        typeof style !== "undefined" &&
         typeof style.background === "string" &&
         style.background.match(cssColorVarRegex)
     ) {
@@ -387,7 +392,11 @@ export const getBoxShadowPair = (sourceProps, targetProps) => {
 }
 
 export const getBoxShadow = style => {
-    if (typeof style.boxShadow === "undefined" || style.boxShadow === null) {
+    if (
+        typeof style === "undefined" ||
+        typeof style.boxShadow === "undefined" ||
+        style.boxShadow === null
+    ) {
         return transparentShadow
     }
 
@@ -396,6 +405,7 @@ export const getBoxShadow = style => {
 
 export const getBorderRadius = style => {
     if (
+        typeof style === "undefined" ||
         typeof style.borderRadius === "undefined" ||
         style.borderRadius === null
     ) {
