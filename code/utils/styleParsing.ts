@@ -21,10 +21,7 @@ export const getColorType = colorObject => {
         return "none"
     }
 
-    if (
-        typeof colorObject === "string" &&
-        colorObject.match(cssColorVarRegex)
-    ) {
+    if (typeof colorObject === "string") {
         return "plain"
     }
 
@@ -57,8 +54,8 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
 
     if (targetColorType === "none" || targetColorType === "plain") {
         if (sourceColorType === "none" || sourceColorType === "plain") {
-            const sourceColor = getPlainBackgroundColor(sourceProps.style)
-            const targetColor = getPlainBackgroundColor(targetProps.style)
+            const sourceColor = getPlainBackgroundColor(sourceProps)
+            const targetColor = getPlainBackgroundColor(targetProps)
 
             sourceLinear = linearGradientFromColor(
                 sourceColorType === "none" && targetColorType === "plain"
@@ -89,7 +86,7 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
                 sourceProps.background,
                 0 // alpha
             )
-            const targetColor = getPlainBackgroundColor(targetProps.style)
+            const targetColor = getPlainBackgroundColor(targetProps)
             targetLinear = linearGradientFromColor(
                 targetColor,
                 sourceProps.background.angle
@@ -109,7 +106,7 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
             const gradientShape = `${widthFactor * 100}% ${heightFactor * 100}%`
             const gradientPosition = `${centerAnchorX * 100}% ${centerAnchorY *
                 100}%`
-            const targetColor = getPlainBackgroundColor(targetProps.style)
+            const targetColor = getPlainBackgroundColor(targetProps)
             targetRadial = radialGradientFromColor(
                 targetColor,
                 gradientShape,
@@ -123,7 +120,7 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
 
     if (targetColorType === "linear-gradient") {
         if (sourceColorType === "none" || sourceColorType === "plain") {
-            const sourceColor = getPlainBackgroundColor(sourceProps.style)
+            const sourceColor = getPlainBackgroundColor(sourceProps)
             sourceLinear =
                 sourceColorType === "none"
                     ? linearGradientFromGradient(targetProps.background, 0)
@@ -157,7 +154,7 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
 
     if (targetColorType === "radial-gradient") {
         if (sourceColorType === "none" || sourceColorType === "plain") {
-            const sourceColor = getPlainBackgroundColor(sourceProps.style)
+            const sourceColor = getPlainBackgroundColor(sourceProps)
 
             const {
                 widthFactor,
@@ -242,20 +239,16 @@ const toColor = color => {
     return Color(color)
 }
 
-export const getPlainBackgroundColor = style => {
-    let color =
-        typeof style === "undefined" ||
-        typeof style.backgroundColor === "undefined" ||
-        style.backgroundColor === null
-            ? "transparent"
-            : style.backgroundColor
+export const getPlainBackgroundColor = props => {
+    let color = "transparent"
 
-    if (
-        typeof style !== "undefined" &&
-        typeof style.background === "string" &&
-        style.background.match(cssColorVarRegex)
-    ) {
-        color = style.background
+    if (typeof props.style !== "undefined") {
+        color =
+            props.style.backgroundColor ||
+            props.style.background ||
+            "transparent"
+    } else {
+        color = props.backgroundColor || props.background || "transparent"
     }
 
     return Color.toString(toColor(color))
