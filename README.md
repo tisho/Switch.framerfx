@@ -6,6 +6,12 @@
 
 # Latest Release
 
+2/5/2020
+
+-   FIX: Fixed a few issues related to using Switch from a code component.
+-   FIX: Fixed draggable components breaking when used with auto-animate.
+-   FIX: Fixed an issue that prevented `setSwitchState` from switching to an index if the name for the state for that index was undefined.
+
 2/4/2020
 
 -   FIX: Fixed custom easing curves not working in tween transitions (thanks @David Ikuye).
