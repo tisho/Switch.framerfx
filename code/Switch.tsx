@@ -69,7 +69,7 @@ function _Switch(props) {
         registerSwitchStates,
     } = actions
 
-    const states = React.Children.toArray(children).map(c => c.props.name)
+    const states = React.Children.toArray(children).map(c => c.props.name || "")
     const sanitizedIdentifier = sanitizePropName(id)
     const current =
         typeof currentStateIndex === "undefined"
