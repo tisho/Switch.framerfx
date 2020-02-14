@@ -258,10 +258,11 @@ function _Switch(props) {
                 {...eventHandlers}
                 {...omit(rest, eventTriggerProps)}
                 background="transparent"
-                size="100%"
+                width="100%"
+                height="100%"
                 overflow={overflow ? "visible" : "hidden"}
             >
-                <Frame background={null} size="100%">
+                <Frame background={null} width="100%" height="100%">
                     <AutoAnimatedState
                         source={children[previousIndexRef.current]}
                         target={children[currentIndexRef.current]}
@@ -283,14 +284,16 @@ function _Switch(props) {
             {...eventHandlers}
             {...omit(rest, eventTriggerProps)}
             background="transparent"
-            size="100%"
+            width="100%"
+            height="100%"
             overflow={overflow ? "visible" : "hidden"}
         >
             <AnimatePresence initial={false} custom={direction}>
                 <Frame
                     key={child.key}
                     background={null}
-                    size="100%"
+                    width="100%"
+                    height="100%"
                     {...TRANSITIONS[transition](child.props, props, direction)}
                 >
                     {child}
