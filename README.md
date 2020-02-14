@@ -6,16 +6,9 @@
 
 # Latest Release
 
-2/5/2020
+2/13/2020
 
--   FIX: Fixed a few issues related to using Switch from a code component.
--   FIX: Fixed draggable components breaking when used with auto-animate.
--   FIX: Fixed an issue that prevented `setSwitchState` from switching to an index if the name for the state for that index was undefined.
-
-2/4/2020
-
--   FIX: Fixed custom easing curves not working in tween transitions (thanks @David Ikuye).
--   NEW: Added more easing curve presets, including most of the ones on https://easings.net. You can find them all under the Easing dropdown when customizing a tween transition.
+-   FIX: Fixed an issue that prevented a Switch container from properly following layout constraints in responsive mode (thanks @Bojan Kocijan).
 
 **[→ See past releases](#past-releases)**
 
@@ -259,6 +252,17 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+2/5/2020
+
+-   FIX: Fixed a few issues related to using Switch from a code component.
+-   FIX: Fixed draggable components breaking when used with auto-animate.
+-   FIX: Fixed an issue that prevented `setSwitchState` from switching to an index if the name for the state for that index was undefined.
+
+2/4/2020
+
+-   FIX: Fixed custom easing curves not working in tween transitions (thanks @David Ikuye).
+-   NEW: Added more easing curve presets, including most of the ones on https://easings.net. You can find them all under the Easing dropdown when customizing a tween transition.
 
 1/31/2020
 
