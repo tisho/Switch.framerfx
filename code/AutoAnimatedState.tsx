@@ -66,8 +66,8 @@ const _AutoAnimatedState = ({
     const targetNodeType = getNodeType(target)
 
     const useAbsolutePositioning = !(
-        sourceNodeType === "StackContainer" ||
-        targetNodeType === "StackContainer" ||
+        ["StackLegacyContainer", "Stack"].indexOf(sourceNodeType) > -1 ||
+        ["StackLegacyContainer", "Stack"].indexOf(targetNodeType) > -1 ||
         parentContext === "Stack"
     )
 
@@ -200,8 +200,10 @@ const _AutoAnimatedState = ({
                 ),
                 direction,
                 parentContext:
-                    sourceNodeType === "StackContainer" ||
-                    targetNodeType === "StackContainer"
+                    ["StackLegacyContainer", "Stack"].indexOf(sourceNodeType) >
+                        -1 ||
+                    ["StackLegacyContainer", "Stack"].indexOf(targetNodeType) >
+                        -1
                         ? "Stack"
                         : null,
                 keyCache: keySourceCache,
@@ -470,7 +472,7 @@ const _AutoAnimatedState = ({
 
     // ------------ Stacks --------------
 
-    if (sourceNodeType === "StackContainer") {
+    if (sourceNodeType === "StackLegacyContainer") {
         const containerProps = {
             key,
             id: null,

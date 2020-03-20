@@ -9,7 +9,7 @@ const nodeTypeMap = {
     Vector: "Vector",
     VectorGroup: "VectorGroup",
     VectorWrapper: "VectorWrapper",
-    StackContainer: "StackContainer",
+    StackLegacyContainer: "StackLegacyContainer",
     Stack: "Stack",
     ComponentContainer: "ComponentContainer",
     SVG: "SVG",
@@ -26,7 +26,7 @@ const nonAnimatableChildrenNodeTypes = [
     "Unknown",
 ]
 
-const animatableNodeTypes = ["Frame", "StackContainer", "Stack"]
+const animatableNodeTypes = ["Frame", "StackLegacyContainer", "Stack"]
 
 export const isNodeAnimatable = node =>
     animatableNodeTypes.indexOf(getNodeType(node)) !== -1
@@ -45,6 +45,17 @@ export const isFrameLike = node => {
     )
 }
 
+export const hasOverrides = node => {
+    const name = getNodeTypeName(node)
+
+    return (
+        typeof name === "undefined" ||
+        name === "s" ||
+        (typeof name === "string" &&
+            name.match(/^WithOverrides?\((Frame|Stack)/))
+    )
+}
+
 export const getNodeName = node => {
     if (
         node.props &&
@@ -60,6 +71,10 @@ export const getNodeName = node => {
 export const getNodeId = node => node.props.id
 export const getNodeTypeName = node => {
     if (node.type) {
+        if ("displayName" in node.type) {
+            return node.type.displayName
+        }
+
         if ("name" in node.type) {
             return node.type.name
         }
@@ -97,19 +112,21 @@ export const getNodeType = node => {
         return nodeTypeMap.Frame
     }
 
-    if (name === "ComponentContainer" && isStack(node)) {
-        return nodeTypeMap.StackContainer
+    if (name === "ComponentContainer" && isLegacyStack(node)) {
+        return nodeTypeMap.StackLegacyContainer
     }
 
     // Frame with Overrides
-    if (
-        typeof name === "undefined" ||
-        name === "s" ||
-        (typeof name === "string" &&
-            name.match(/^WithOverrides?\((Frame|Stack)/))
-    ) {
-        if (isStack(node)) {
-            return nodeTypeMap.StackContainer
+    if (hasOverrides(node)) {
+        if (isLegacyStack(node)) {
+            return nodeTypeMap.StackLegacyContainer
+        }
+
+        if (
+            typeof name === "string" &&
+            name.match(/^WithOverrides?\(Stack\)/)
+        ) {
+            return nodeTypeMap.Stack
         }
 
         if (isFrameLike(node)) {
@@ -120,7 +137,7 @@ export const getNodeType = node => {
     return nodeTypeMap[name] || nodeTypeMap.Unknown
 }
 
-export const isStack = node =>
+export const isLegacyStack = node =>
     "componentIdentifier" in node.props &&
     node.props.componentIdentifier === "framer/Stack"
 
@@ -132,7 +149,7 @@ export const getNodeRect = (node, parentSize) => {
     const nodeType = getNodeType(node)
     let props = { ...node.props }
 
-    if (nodeType === "StackContainer") {
+    if (nodeType === "StackLegacyContainer") {
         const stack = React.Children.toArray(node.props.children)[0]
 
         props.width = stack.props.width
@@ -156,10 +173,10 @@ export const getNodeChildren = node => {
     const nodeType = getNodeType(node)
     let children = node.props.children
 
-    if (nodeType === "StackContainer") {
+    if (nodeType === "StackLegacyContainer") {
         const stack = React.Children.toArray(children)[0]
         children = stack.props.children
     }
 
-    return React.Children.toArray(children).map(nodeWithIdAndKey)
+    return React.Children.map(children, nodeWithIdAndKey)
 }
