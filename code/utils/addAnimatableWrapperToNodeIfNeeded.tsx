@@ -1,7 +1,7 @@
 import * as React from "react"
 import { cloneElement } from "react"
 import { Frame } from "framer"
-import { getNodeType, getNodeName } from "./nodeHelpers"
+import { getNodeType, getNodeName, hasOverrides } from "./nodeHelpers"
 
 const AnimatableWrapper = ({ children, name, ...props }) => (
     <Frame {...props} name={name} background={null}>
@@ -16,10 +16,12 @@ export const addAnimatableWrapperToNodeIfNeeded = (
     propOverrides = {},
     children = []
 ) => {
+    const nodeType = getNodeType(node)
     const needsWrapper =
-        ["Frame", "VectorWrapper", "AnimatableWrapper"].indexOf(
-            getNodeType(node)
-        ) === -1
+        ["Frame", "VectorWrapper", "AnimatableWrapper", "Stack"].indexOf(
+            nodeType
+        ) === -1 ||
+        (nodeType === "Frame" && hasOverrides(node))
 
     return needsWrapper ? (
         <AnimatableWrapper key={node.key} name={getNodeName(node)}>

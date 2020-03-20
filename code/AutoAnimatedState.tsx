@@ -214,7 +214,8 @@ const _AutoAnimatedState = ({
 
         const wrappedChild = addAnimatableWrapperToNodeIfNeeded(child, {
             ...propsForPositionReset,
-            ...pick(positionAndSize, ["width", "height"]),
+            width: "100%",
+            height: "100%",
         })
 
         if (enteringChildrenIds.indexOf(id) !== -1) {
@@ -404,7 +405,8 @@ const _AutoAnimatedState = ({
             source,
             {
                 ...propsForPositionReset,
-                ...pick(sourcePositionAndSizeProps, ["width", "height"]),
+                width: "100%",
+                height: "100%",
             },
             shouldAnimateChildren ? animatedHierarchy : []
         )
@@ -540,7 +542,6 @@ const _AutoAnimatedState = ({
                       target,
                       transition: "morph",
                   }).transition,
-            // id: null,
             key,
         }
 
@@ -550,14 +551,12 @@ const _AutoAnimatedState = ({
                 ...propsForPositionReset,
                 width: "100%",
                 height: "100%",
-                // id: null,
                 id: target.props.id,
                 key,
             },
             [
                 cloneElement(sourceComponent, {
                     ...targetComponent.props,
-                    // id: null,
                     key,
                 }),
             ]
@@ -568,8 +567,15 @@ const _AutoAnimatedState = ({
 
     // ------------ All Other Morphable Elements --------------
 
+    const wrappedTarget = addAnimatableWrapperToNodeIfNeeded(target, {
+        ...propsForPositionReset,
+        width: "100%",
+        height: "100%",
+        key,
+    })
+
     return cloneElement(
-        target,
+        wrappedTarget,
         {
             id: null,
             ...transitionProps,
