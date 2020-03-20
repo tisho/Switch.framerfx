@@ -49,7 +49,6 @@ export const hasOverrides = node => {
     const name = getNodeTypeName(node)
 
     return (
-        typeof name === "undefined" ||
         name === "s" ||
         (typeof name === "string" &&
             name.match(/^WithOverrides?\((Frame|Stack)/))
@@ -91,37 +90,42 @@ export const getNodeTypeName = node => {
     return undefined
 }
 
+const isVectorWrapper = node => {
+    // if all children are of type Vector or VectorGroup, this is a vector wrapper
+    const children = React.Children.toArray(node.props.children || [])
+
+    return (
+        children.length > 0 &&
+        children.every(
+            child =>
+                [nodeTypeMap.Vector, nodeTypeMap.VectorGroup].indexOf(
+                    getNodeType(child)
+                ) !== -1
+        )
+    )
+}
+
 export const getNodeType = node => {
     const name = getNodeTypeName(node)
 
+    // Known Frame case - Frames could be Vector Wrappers or regular frames
     if (name === "Frame" || name === "FrameWithMotion") {
-        // if all children are of type Vector or VectorGroup, this is a vector wrapper
-        const children = React.Children.toArray(node.props.children || [])
-        if (
-            children.length > 0 &&
-            children.every(
-                child =>
-                    [nodeTypeMap.Vector, nodeTypeMap.VectorGroup].indexOf(
-                        getNodeType(child)
-                    ) !== -1
-            )
-        ) {
-            return nodeTypeMap.VectorWrapper
-        }
-
-        return nodeTypeMap.Frame
+        return getRefinedFrameType(node)
     }
 
+    // Component containers could be legacy stacks
     if (name === "ComponentContainer" && isLegacyStack(node)) {
         return nodeTypeMap.StackLegacyContainer
     }
 
-    // Frame with Overrides
-    if (hasOverrides(node)) {
+    // Unknown types and Frames with Overrides
+    if (typeof name === "undefined" || hasOverrides(node)) {
+        // Test for an overridden Legacy Stack (a component container underneath)
         if (isLegacyStack(node)) {
             return nodeTypeMap.StackLegacyContainer
         }
 
+        // Test for a modern overridden Stack (will have a proper displayName)
         if (
             typeof name === "string" &&
             name.match(/^WithOverrides?\(Stack\)/)
@@ -129,12 +133,24 @@ export const getNodeType = node => {
             return nodeTypeMap.Stack
         }
 
+        // Test for Frame-like props and if true, apply the same Frame heuristics as
+        // in the known Frame case above
         if (isFrameLike(node)) {
-            return nodeTypeMap.Frame
+            return getRefinedFrameType(node)
         }
     }
 
     return nodeTypeMap[name] || nodeTypeMap.Unknown
+}
+
+// Refines the node type of a Frame to either a VectorWrapper, or a regular Frame.
+// The passed in node is assumed to be a Frame/FrameWithMotion or a Frame-like component.
+const getRefinedFrameType = node => {
+    if (isVectorWrapper(node)) {
+        return nodeTypeMap.VectorWrapper
+    }
+
+    return nodeTypeMap.Frame
 }
 
 export const isLegacyStack = node =>
