@@ -105,6 +105,10 @@ export const TRANSITIONS = {
         initial: "initial",
         animate: "enter",
         exit: "exit",
+        transition:
+            transitionConfigType === "default"
+                ? DEFAULT_SPRING
+                : transitionOptionsFromProps(containerProps),
     }),
     zoomout: (childProps, { transitionConfigType, ...containerProps }) => ({
         initial: { opacity: 0, scale: 1.15 },
