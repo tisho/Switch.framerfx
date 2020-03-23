@@ -287,6 +287,7 @@ function _Switch(props) {
             width="100%"
             height="100%"
             overflow={overflow ? "visible" : "hidden"}
+            style={{ zIndex: 0 }}
         >
             <AnimatePresence initial={false} custom={direction}>
                 <Frame
@@ -440,6 +441,7 @@ const transitionOptionsWithPrefix = (
             type: ControlType.Number,
             step: 0.1,
             min: 0,
+            unit: "s",
             displayStepper: true,
             hidden: props =>
                 shouldHide(props) ||
@@ -679,6 +681,7 @@ addPropertyControls(Switch, {
         type: ControlType.Number,
         displayStepper: true,
         step: 0.01,
+        unit: "s",
         defaultValue: defaultProps.staggerChildren,
         hidden: props => props.transition !== "autoanimate",
     },
@@ -688,6 +691,7 @@ addPropertyControls(Switch, {
         type: ControlType.Number,
         displayStepper: true,
         step: 0.1,
+        unit: "s",
         defaultValue: defaultProps.delayChildren,
         hidden: props => props.transition !== "autoanimate",
     },
