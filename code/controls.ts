@@ -2,6 +2,8 @@ import { ControlType, PropertyControls } from "framer"
 
 export const keyEventTriggerNames = ["onKeyDown", "onKeyUp"]
 export const automaticEventTriggerNames = ["afterDelay"]
+export const gestureEventNames = ["onDoubleTap", "onLongPress"]
+
 export const eventTriggerNames = [
     ...automaticEventTriggerNames,
     "onTap",
@@ -11,8 +13,16 @@ export const eventTriggerNames = [
     "onHoverEnd",
     "onDragStart",
     "onDragEnd",
+    ...gestureEventNames,
     ...keyEventTriggerNames,
 ]
+
+export const isCustomEvent = (name: string) => {
+    return (
+        automaticEventTriggerNames.indexOf(name) !== -1 ||
+        gestureEventNames.indexOf(name) !== -1
+    )
+}
 
 export const eventTriggerTitles = {
     onTap: "On Tap",
@@ -23,6 +33,8 @@ export const eventTriggerTitles = {
     onHoverEnd: "Hover End",
     onDragStart: "Drag Start",
     onDragEnd: "Drag End",
+    onDoubleTap: "Double Tap",
+    onLongPress: "Long Press",
     onKeyDown: "Key Down",
     onKeyUp: "Key Up",
 }
@@ -34,6 +46,7 @@ export const eventTriggerProps = [
     ...eventTriggerNames.map(name => `${name}SpecificName`),
     ...keyEventTriggerNames.map(name => `${name}Key`),
     ...automaticEventTriggerNames.map(name => `${name}Delay`),
+    "onLongPressDuration",
 ]
 
 export const keyEventTriggerProps = [
@@ -104,6 +117,20 @@ export const eventTriggerPropertyControls: PropertyControls = eventTriggerNames.
                 displayStepper: true,
                 step: 0.1,
                 defaultValue: 0,
+                hidden: props =>
+                    props.isInteractive === false ||
+                    props[`${trigger}Action`] === "unset",
+            }
+        }
+
+        if (trigger === "onLongPress") {
+            res["onLongPressDuration"] = {
+                title: "↳ Duration",
+                type: ControlType.Number,
+                displayStepper: true,
+                step: 0.1,
+                defaultValue: 0.5,
+                unit: "s",
                 hidden: props =>
                     props.isInteractive === false ||
                     props[`${trigger}Action`] === "unset",
