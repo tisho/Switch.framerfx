@@ -7,6 +7,11 @@
 
 # Latest Release
 
+3/24/2020
+
+-   FIX: Fixed an issue that kept layers visible during an auto-animate transition, even when they were hidden from the layers panel in the target state (thanks @davidhoeller).
+-   FIX: Fixed text and graphic layers flickering on first render, and significantly reduced flickering between text/graphics that stayed the same between states (thanks @Benjamin Frenzel).
+
 3/23/2020
 
 -   NEW: Added two new triggers: Double Tap and Long Press, paving the way for more gestures.
