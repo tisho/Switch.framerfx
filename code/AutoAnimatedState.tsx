@@ -296,7 +296,10 @@ const _AutoAnimatedState = ({
             return
         }
 
-        if (source.type === target.type && source.props === target.props) {
+        if (
+            source.type === target.type &&
+            getNodeId(source) === getNodeId(target)
+        ) {
             // skip animation entirely if we're not transitioning to a new state
             controls.set(nextVariantName)
         } else {

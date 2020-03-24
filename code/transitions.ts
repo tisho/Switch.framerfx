@@ -56,6 +56,7 @@ export const transitionOptionsFromProps = (props, prefix = null) => {
             damping: getProp("damping"),
             mass: getProp("mass"),
             stiffness: getProp("stiffness"),
+            velocity: 0,
         }
     }
 
@@ -374,21 +375,15 @@ export const TRANSITIONS = {
         // out of existence and then back in, rather than smoothly cross-fading between states.
         // A true cross-dissolve would have us paint the blended value of the front/back layer,
         // preserving the alpha of the target, but hopefully this is a good approximation.
-        const opacity =
-            options.type === "tween"
-                ? {
-                      type: "tween",
-                      // using a blend of easeIn/easeOut means that in the middle
-                      // of the transition, both elements will be at >50% opacity
-                      ease:
-                          direction === "cross-dissolve-enter"
-                              ? "easeOut"
-                              : "easeIn",
-                  }
-                : options
-
-        if (options["duration"]) {
-            opacity["duration"] = options["duration"]
+        const opacity = {
+            type: "tween",
+            // using a blend of easeIn/easeOut means that in the middle
+            // of the transition, both elements will be at >50% opacity
+            ease:
+                direction === "cross-dissolve-enter"
+                    ? EASINGS.easeOutCubic
+                    : EASINGS.easeInCubic,
+            duration: options["duration"],
         }
 
         return {
