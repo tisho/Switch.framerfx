@@ -6,9 +6,14 @@
 
 # Latest Release
 
-2/13/2020
+3/23/2020
 
--   FIX: Fixed an issue that prevented a Switch container from properly following layout constraints in responsive mode (thanks @Bojan Kocijan).
+-   NEW: Added two new triggers: Double Tap and Long Press, paving the way for more gestures.
+-   FIX: The zoom transition was missing transition props (thanks @Johannes Tutsch).
+-   FIX: Fixed an issue that made states using the slide transition to appear above layers that are technically placed above the Switch in the view hierarchy (thanks @JeppeVolander)
+-   FIX: Fixed Stacks and Graphics in Framer Web / Beta appearing in the wrong position when using Auto-Animate.
+-   FIX: Fixed layers with Overrides or Interactions added in Framer Web / Beta appearing in the wrong position when using Auto-Animate.
+-   FIX: Fixed an issue that made states render twice if they have Overrides or Interactions applied, which made "After Delay" triggers also trigger twice.
 
 **[→ See past releases](#past-releases)**
 
@@ -197,6 +202,13 @@ To control Switches from code, first import the `useSwitch` hook at the top of y
 import { useSwitch } from "@framer/tishogeorgiev.switch/code"
 ```
 
+**Note**: You will likely get a red underline under `@framer/tishogeorgiev.switch/code`, with an error message like "Cannot find module '@framer/tishogeorgiev.switch/code'". You can safely ignore this error, as the code will work anyway. If it bothers you, import `useSwitch` like this, instead:
+
+```
+// @ts-ignore
+import { useSwitch } from "@framer/tishogeorgiev.switch/code"
+```
+
 Then call the `useSwitch()` hook in your code component or override:
 
 ```typescript
@@ -252,6 +264,10 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+2/13/2020
+
+-   FIX: Fixed an issue that prevented a Switch container from properly following layout constraints in responsive mode (thanks @Bojan Kocijan).
 
 2/5/2020
 
