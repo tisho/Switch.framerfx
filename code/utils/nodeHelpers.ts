@@ -196,3 +196,7 @@ export const getNodeChildren = node => {
 
     return React.Children.map(children, nodeWithIdAndKey)
 }
+
+export const isNodeVisible = node => {
+    return node.props && node.props.visible
+}

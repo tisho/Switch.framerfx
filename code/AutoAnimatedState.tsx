@@ -21,6 +21,7 @@ import {
     getNodeType,
     getNodeRect,
     getNodeChildren,
+    isNodeVisible,
     nodeWithIdAndKey,
     isNodeAnimatable,
     isSameComponent,
@@ -99,6 +100,11 @@ const _AutoAnimatedState = ({
     targetStateChildren.forEach(child => {
         const name = getNodeName(child)
         const id = getNodeId(child)
+
+        // if the child isn't visible in the target state, skip it, so it can be marked for exiting
+        if (!isNodeVisible(child)) {
+            return
+        }
 
         // find the first match by name that's not already in the morphing children list
         const match = sourceStateChildren.find(otherChild => {
