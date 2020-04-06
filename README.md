@@ -8,6 +8,11 @@
 
 # Latest Release
 
+4/6/2020
+
+-   FIX: Improved the way Switch loads in order to work around some issues in Framer that could cause the Switch component to disappear from the project entirely, leaving existing instances on the canvas disconnected from their states.
+-   FIX: Fixed a regression that made Switches show an error when you first toggle the "Interactive" property.
+
 3/24/2020
 
 -   FIX: Fixed an issue that kept layers visible during an auto-animate transition, even when they were hidden from the layers panel in the target state (thanks @davidhoeller).
