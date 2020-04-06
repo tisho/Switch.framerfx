@@ -83,7 +83,7 @@ export function extractEventHandlersFromProps(
 
             if (keyEventTriggerNames.indexOf(event) !== -1) {
                 if (action !== "unset") {
-                    const hotkey = props[`${event}Key`].trim()
+                    const hotkey = (props[`${event}Key`] || "").trim()
                     if (hotkey !== "") {
                         const options: KeyEventOptions = {
                             keydown: true,
