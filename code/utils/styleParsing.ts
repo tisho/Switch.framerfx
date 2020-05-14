@@ -2,21 +2,21 @@ import { Color, LinearGradient, RadialGradient } from "framer"
 import { omit } from "./omit"
 import { equalizeArrayLength } from "./equalizeArrayLength"
 
-export const getOpacity = style =>
+export const getOpacity = (style) =>
     typeof style === "undefined" ||
     typeof style.opacity === "undefined" ||
     style.opacity === null
         ? 1
         : style.opacity
 
-export const getRotate = style =>
+export const getRotate = (style) =>
     typeof style === "undefined" || typeof style.rotate === "undefined"
         ? 0
         : style.rotate
 
-const cssColorVarRegex = /^var\([^,]*, (.*)\)/
+const cssColorVarRegex = /\bvar\([^,]*, (.*)\)/
 
-export const getColorType = colorObject => {
+export const getColorType = (colorObject) => {
     if (typeof colorObject === "undefined" || colorObject === null) {
         return "none"
     }
@@ -104,8 +104,9 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
             } = sourceProps.background
 
             const gradientShape = `${widthFactor * 100}% ${heightFactor * 100}%`
-            const gradientPosition = `${centerAnchorX * 100}% ${centerAnchorY *
-                100}%`
+            const gradientPosition = `${centerAnchorX * 100}% ${
+                centerAnchorY * 100
+            }%`
             const targetColor = getPlainBackgroundColor(targetProps)
             targetRadial = radialGradientFromColor(
                 targetColor,
@@ -164,8 +165,9 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
             } = targetProps.background
 
             const gradientShape = `${widthFactor * 100}% ${heightFactor * 100}%`
-            const gradientPosition = `${centerAnchorX * 100}% ${centerAnchorY *
-                100}%`
+            const gradientPosition = `${centerAnchorX * 100}% ${
+                centerAnchorY * 100
+            }%`
 
             sourceLinear =
                 sourceColorType === "none"
@@ -215,7 +217,7 @@ export const isBackgroundTransitionAnimatable = (source, target) => {
     )
 }
 
-export const transparent = color =>
+export const transparent = (color) =>
     Color.toString(Color.alpha(toColor(color), 0))
 
 export const linearGradientFromColor = (color, angle = 0) => {
@@ -230,7 +232,7 @@ export const radialGradientFromColor = (
     return `radial-gradient(${shape} at ${position}, ${color} 0%, ${color} 100%)`
 }
 
-const toColor = color => {
+const toColor = (color) => {
     if (typeof color === "string" && color.match(cssColorVarRegex)) {
         const matches = color.match(cssColorVarRegex)
         return Color(matches[1])
@@ -239,7 +241,7 @@ const toColor = color => {
     return Color(color)
 }
 
-export const getPlainBackgroundColor = props => {
+export const getPlainBackgroundColor = (props) => {
     let color = "transparent"
 
     if (typeof props.style !== "undefined") {
@@ -259,7 +261,7 @@ export const toCssGradientWithRgbStops = (
     targetGradientType = null,
     targetAlpha = null
 ) => {
-    const stops = gradient.stops.map(stop => ({
+    const stops = gradient.stops.map((stop) => ({
         ...stop,
         value: Color.toString(
             targetAlpha === null
@@ -312,10 +314,12 @@ const shadowRegex = new RegExp(/, (?=-?\d+px)|, (?=inset -?\d+px)/)
 const maxShadows = 10
 const colorRegex = /(#(?:[0-9a-f]{2}){2,4}|(#[0-9a-f]{3})|(rgb|hsl)a?\((-?\d+%?[,\s]+){2,3}\s*[\d\.]+%?\)|\b(black|silver|gray|whitesmoke|maroon|red|purple|fuchsia|green|lime|olivedrab|yellow|navy|blue|teal|aquamarine|orange|aliceblue|antiquewhite|aqua|azure|beige|bisque|blanchedalmond|blueviolet|brown|burlywood|cadetblue|chartreuse|chocolate|coral|cornflowerblue|cornsilk|crimson|darkblue|darkcyan|darkgoldenrod|darkgray|darkgreen|darkgrey|darkkhaki|darkmagenta|darkolivegreen|darkorange|darkorchid|darkred|darksalmon|darkseagreen|darkslateblue|darkslategray|darkslategrey|darkturquoise|darkviolet|deeppink|deepskyblue|dimgray|dimgrey|dodgerblue|firebrick|floralwhite|forestgreen|gainsboro|ghostwhite|goldenrod|gold|greenyellow|grey|honeydew|hotpink|indianred|indigo|ivory|khaki|lavenderblush|lavender|lawngreen|lemonchiffon|lightblue|lightcoral|lightcyan|lightgoldenrodyellow|lightgray|lightgreen|lightgrey|lightpink|lightsalmon|lightseagreen|lightskyblue|lightslategray|lightslategrey|lightsteelblue|lightyellow|limegreen|linen|mediumaquamarine|mediumblue|mediumorchid|mediumpurple|mediumseagreen|mediumslateblue|mediumspringgreen|mediumturquoise|mediumvioletred|midnightblue|mintcream|mistyrose|moccasin|navajowhite|oldlace|olive|orangered|orchid|palegoldenrod|palegreen|paleturquoise|palevioletred|papayawhip|peachpuff|peru|pink|plum|powderblue|rosybrown|royalblue|saddlebrown|salmon|sandybrown|seagreen|seashell|sienna|skyblue|slateblue|slategray|slategrey|snow|springgreen|steelblue|tan|thistle|tomato|turquoise|violet|wheat|white|yellowgreen|rebeccapurple)\b)/i
 
-export const convertColorsInStringToRgba = string => {
-    const updated = string.replace(colorRegex, match => {
-        return Color.toString(Color(match))
-    })
+export const convertColorsInStringToRgba = (string) => {
+    const updated = string
+        .replace(cssColorVarRegex, "$1")
+        .replace(colorRegex, (match) => {
+            return Color.toString(toColor(match))
+        })
 
     return updated
 }
@@ -323,20 +327,20 @@ export const convertColorsInStringToRgba = string => {
 export const getBoxShadowPair = (sourceProps, targetProps) => {
     let sourceShadows = getBoxShadow(sourceProps.style).split(shadowRegex)
     let sourceBoxShadows = sourceShadows
-        .filter(s => !s.match(/^inset/))
+        .filter((s) => !s.match(/^inset/))
         .slice(0, maxShadows)
         .map(convertColorsInStringToRgba)
     let sourceInnerShadows = sourceShadows
-        .filter(s => s.match(/^inset/))
+        .filter((s) => s.match(/^inset/))
         .slice(0, maxShadows)
         .map(convertColorsInStringToRgba)
     let targetShadows = getBoxShadow(targetProps.style).split(shadowRegex)
     let targetBoxShadows = targetShadows
-        .filter(s => !s.match(/^inset/))
+        .filter((s) => !s.match(/^inset/))
         .slice(0, maxShadows)
         .map(convertColorsInStringToRgba)
     let targetInnerShadows = targetShadows
-        .filter(s => s.match(/^inset/))
+        .filter((s) => s.match(/^inset/))
         .slice(0, maxShadows)
         .map(convertColorsInStringToRgba)
     const placeholderBoxShadows = Array(maxShadows).fill(transparentShadow)
@@ -386,7 +390,7 @@ export const getBoxShadowPair = (sourceProps, targetProps) => {
     return [sourceShadows.join(", "), targetShadows.join(", ")]
 }
 
-export const getBoxShadow = style => {
+export const getBoxShadow = (style) => {
     if (
         typeof style === "undefined" ||
         typeof style.boxShadow === "undefined" ||
@@ -398,7 +402,7 @@ export const getBoxShadow = style => {
     return style.boxShadow
 }
 
-export const getBorderRadius = style => {
+export const getBorderRadius = (style) => {
     if (
         typeof style === "undefined" ||
         typeof style.borderRadius === "undefined" ||
@@ -443,7 +447,7 @@ export const getBorderPair = (sourceProps, targetProps) => {
     return [sourceBorder, targetBorder]
 }
 
-export const getBorder = border => {
+export const getBorder = (border) => {
     if (
         typeof border === "undefined" ||
         border === null ||
@@ -456,7 +460,7 @@ export const getBorder = border => {
         }
     }
 
-    const rgbaColor = Color.toString(Color(border.borderColor))
+    const rgbaColor = Color.toString(toColor(border.borderColor))
     return {
         borderWidth:
             typeof border.borderWidth === "number"
@@ -467,7 +471,7 @@ export const getBorder = border => {
     }
 }
 
-export const rectAsStyleProps = rect => {
+export const rectAsStyleProps = (rect) => {
     return {
         width: rect.width,
         height: rect.height,
@@ -478,7 +482,7 @@ export const rectAsStyleProps = rect => {
 
 const absolutePositioningProps = ["top", "left", "bottom", "right"]
 
-export const filterOutAbsolutePositioningProps = props => {
+export const filterOutAbsolutePositioningProps = (props) => {
     const filteredProps = omit(props, absolutePositioningProps)
 
     if (filteredProps.variants) {
