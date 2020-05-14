@@ -8,24 +8,9 @@
 
 # Latest Release
 
-4/6/2020
+5/14/2020
 
--   FIX: Improved the way Switch loads in order to work around some issues in Framer that could cause the Switch component to disappear from the project entirely, leaving existing instances on the canvas disconnected from their states.
--   FIX: Fixed a regression that made Switches show an error when you first toggle the "Interactive" property.
-
-3/24/2020
-
--   FIX: Fixed an issue that kept layers visible during an auto-animate transition, even when they were hidden from the layers panel in the target state (thanks @davidhoeller).
--   FIX: Fixed text and graphic layers flickering on first render, and significantly reduced flickering between text/graphics that stayed the same between states (thanks @Benjamin Frenzel).
-
-3/23/2020
-
--   NEW: Added two new triggers: Double Tap and Long Press, paving the way for more gestures.
--   FIX: The zoom transition was missing transition props (thanks @Johannes Tutsch).
--   FIX: Fixed an issue that made states using the slide transition to appear above layers that are technically placed above the Switch in the view hierarchy (thanks @JeppeVolander)
--   FIX: Fixed Stacks and Graphics in Framer Web / Beta appearing in the wrong position when using Auto-Animate.
--   FIX: Fixed layers with Overrides or Interactions added in Framer Web / Beta appearing in the wrong position when using Auto-Animate.
--   FIX: Fixed an issue that made states render twice if they have Overrides or Interactions applied, which made "After Delay" triggers also trigger twice.
+-   FIX: Fixed an issue that prevented animated borders and box shadows from animating to the right color when using shared colors (thanks @Joe Preston).
 
 **[→ See past releases](#past-releases)**
 
@@ -276,6 +261,25 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+4/6/2020
+
+-   FIX: Improved the way Switch loads in order to work around some issues in Framer that could cause the Switch component to disappear from the project entirely, leaving existing instances on the canvas disconnected from their states.
+-   FIX: Fixed a regression that made Switches show an error when you first toggle the "Interactive" property.
+
+3/24/2020
+
+-   FIX: Fixed an issue that kept layers visible during an auto-animate transition, even when they were hidden from the layers panel in the target state (thanks @davidhoeller).
+-   FIX: Fixed text and graphic layers flickering on first render, and significantly reduced flickering between text/graphics that stayed the same between states (thanks @Benjamin Frenzel).
+
+3/23/2020
+
+-   NEW: Added two new triggers: Double Tap and Long Press, paving the way for more gestures.
+-   FIX: The zoom transition was missing transition props (thanks @Johannes Tutsch).
+-   FIX: Fixed an issue that made states using the slide transition to appear above layers that are technically placed above the Switch in the view hierarchy (thanks @JeppeVolander)
+-   FIX: Fixed Stacks and Graphics in Framer Web / Beta appearing in the wrong position when using Auto-Animate.
+-   FIX: Fixed layers with Overrides or Interactions added in Framer Web / Beta appearing in the wrong position when using Auto-Animate.
+-   FIX: Fixed an issue that made states render twice if they have Overrides or Interactions applied, which made "After Delay" triggers also trigger twice.
 
 2/13/2020
 
