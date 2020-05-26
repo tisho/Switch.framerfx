@@ -8,6 +8,10 @@
 
 # Latest Release
 
+5/26/2020
+
+-   FIX: Fixed an issue that prevented Switch containers from receiving focus when clicked, which sometimes prevented keyboard triggers from working (thanks @Si).
+
 5/14/2020
 
 -   FIX: Fixed an issue that prevented animated borders and box shadows from animating to the right color when using shared colors (thanks @Joe Preston).
