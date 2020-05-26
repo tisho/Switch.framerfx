@@ -13,14 +13,8 @@ export function useLongPress(
     // dependencies so it only creates a new callback if either of these changes.
     const onPressStart = useCallback(
         (event: MouseEvent | TouchEvent) => {
-            // Prevent the browser's default response to this event. On mobile browsers
-            // long presses are used . This will also block touch scrolling - a more
-            // robust implementation will take this into account, but this is fine
-            // for prototyping.
-            event.preventDefault()
-
-            // Start a timeout that, after the provided `duration`, will fire the
-            // supplied callbacl.
+            // Start a timeout that will fire the supplied callback after the
+            // provided `duration`
             timeout.current = setTimeout(() => callback(event), duration)
         },
         [callback, duration]
