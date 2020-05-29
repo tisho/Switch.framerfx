@@ -8,19 +8,17 @@
 
 # Latest Release
 
-5/26/2020
+5/29/2020
 
--   FIX: Fixed an issue that prevented Switch containers from receiving focus when clicked, which sometimes prevented keyboard triggers from working (thanks @Si).
-
-5/14/2020
-
--   FIX: Fixed an issue that prevented animated borders and box shadows from animating to the right color when using shared colors (thanks @Joe Preston).
+-   NEW: Added the ability for SwitchToStateAction to control the closest parent Switch, instead of needing to specify the name of a Switch to control. This helps tremendously when using Switch in reusable components, or multi-step animations, and takes away the need to even set a name for most Switches. I've reconfigured a lot of the existing examples to take advantage of this, so take a look if you're wondering how to set it up.
 
 **[→ See past releases](#past-releases)**
 
 # Examples
 
-**[→ Download all examples (.framerx file)](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-examples.framerx)**
+**[→ See examples in Framer Web](https://framer.com/projects/new?duplicate=3bx2ztPRfzFiMJ8hWdmw)**
+
+**[→ Download examples (.framerx file)](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-examples.framerx)**
 
 ## Bottom Sheet
 
@@ -192,7 +190,8 @@ Use these in Overrides, or when you use the `Switch` component from code.
 
 | Prop            | Type     | Description                                                                                                                                                                                                                               |
 | --------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `target`        | string   | The name of the Switch instance to target. Make sure this is unique and matches the name of an existing Switch.                                                                                                                           |
+| `targetType`    | enum     | Defines whether the SwitchToStateAction will target the `closest` switch, or target a specifically `named` Switch. Possible values are: `closest`, `named`. Default is `named`.                                                           |
+| `target`        | string   | The name of the Switch instance to target. Make sure this is unique and matches the name of an existing Switch. Only used when `targetType` is set to `named`.                                                                            |
 | `shouldTrigger` | function | A callback function that will be called right before a trigger is fired. Returning `false` from this callback will stop the trigger from firing. All original arguments to the trigger will be passed down to the function (e.g. `event`) |
 
 ## Controlling Switches with the `useSwitch` Hook
@@ -265,6 +264,14 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+5/26/2020
+
+-   FIX: Fixed an issue that prevented Switch containers from receiving focus when clicked, which sometimes prevented keyboard triggers from working (thanks @Si).
+
+5/14/2020
+
+-   FIX: Fixed an issue that prevented animated borders and box shadows from animating to the right color when using shared colors (thanks @Joe Preston).
 
 4/6/2020
 
