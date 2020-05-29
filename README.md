@@ -16,7 +16,7 @@
 
 # Examples
 
-**[→ See examples in Framer Web](https://framer.com/projects/new?duplicate=3bx2ztPRfzFiMJ8hWdmw)**
+**[→ See examples in Framer Web (requires free account)](https://framer.com/projects/new?duplicate=3bx2ztPRfzFiMJ8hWdmw)**
 
 **[→ Download examples (.framerx file)](https://tisho-co.s3.amazonaws.com/img/framer-switch/switch-examples.framerx)**
 
