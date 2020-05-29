@@ -27,7 +27,7 @@
               "afterDelayDelay" : 0,
               "afterDelaySpecificIndex" : 0,
               "afterDelaySpecificName" : "",
-              "autoAssignIdentifier" : false,
+              "autoAssignIdentifier" : true,
               "children" : [
                 {
                   "enabled" : true,
@@ -797,7 +797,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedCarousel"
+              "target" : "sharedCarousel",
+              "targetType" : "named"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -891,7 +892,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedCarousel"
+              "target" : "sharedCarousel",
+              "targetType" : "named"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -1410,7 +1412,8 @@
                   "onTapStartAction" : "unset",
                   "onTapStartSpecificIndex" : 0,
                   "onTapStartSpecificName" : "",
-                  "target" : "sharedTabs"
+                  "target" : "sharedTabs",
+                  "targetType" : "named"
                 },
                 "codeOverrideEnabled" : false,
                 "constraintsLocked" : false,
@@ -1504,7 +1507,8 @@
                   "onTapStartAction" : "unset",
                   "onTapStartSpecificIndex" : 1,
                   "onTapStartSpecificName" : "",
-                  "target" : "sharedTabs"
+                  "target" : "sharedTabs",
+                  "targetType" : "named"
                 },
                 "codeOverrideEnabled" : false,
                 "constraintsLocked" : false,
@@ -1598,7 +1602,8 @@
                   "onTapStartAction" : "unset",
                   "onTapStartSpecificIndex" : 0,
                   "onTapStartSpecificName" : "",
-                  "target" : "sharedTabs"
+                  "target" : "sharedTabs",
+                  "targetType" : "named"
                 },
                 "codeOverrideEnabled" : false,
                 "constraintsLocked" : false,
@@ -2116,7 +2121,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedTooltip"
+              "target" : "sharedTooltip",
+              "targetType" : "named"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -2729,7 +2735,8 @@
                   "onTapStartAction" : "unset",
                   "onTapStartSpecificIndex" : 0,
                   "onTapStartSpecificName" : "",
-                  "target" : "sharedLock"
+                  "target" : "sharedLock",
+                  "targetType" : "named"
                 },
                 "codeOverrideEnabled" : true,
                 "codeOverrideFile" : ".\/SwitchOverrideExamples.tsx",
@@ -3290,7 +3297,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedSwitch"
+              "target" : "sharedSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -3384,7 +3392,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedSwitch"
+              "target" : "sharedSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -3950,7 +3959,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedSwitch"
+              "target" : "sharedSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -6569,7 +6579,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedSwitch"
+              "target" : "sharedSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -7209,7 +7220,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 438
+              "width" : 483
             },
             "width" : 0
           },
@@ -7299,7 +7310,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 286
+              "width" : 314
             },
             "width" : 0
           },
@@ -7389,7 +7400,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 152
+              "width" : 168
             },
             "width" : 0
           },
@@ -7479,7 +7490,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 251
+              "width" : 281
             },
             "width" : 0
           },
@@ -7569,7 +7580,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 214
+              "width" : 238
             },
             "width" : 0
           },
@@ -7659,7 +7670,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 393
+              "width" : 432
             },
             "width" : 0
           },
@@ -7669,7 +7680,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 393,
+        "width" : 432,
         "widthType" : 0
       },
       {
@@ -7749,7 +7760,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 304
+              "width" : 332
             },
             "width" : 0
           },
@@ -7759,7 +7770,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 304,
+        "width" : 332,
         "widthType" : 0
       },
       {
@@ -7839,7 +7850,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 526
+              "width" : 579
             },
             "width" : 0
           },
@@ -7849,7 +7860,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 526,
+        "width" : 579,
         "widthType" : 0
       },
       {
@@ -7929,7 +7940,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 532
+              "width" : 581
             },
             "width" : 0
           },
@@ -7939,7 +7950,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 532,
+        "width" : 581,
         "widthType" : 0
       },
       {
@@ -10241,7 +10252,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 635
+              "width" : 700
             },
             "width" : 0
           },
@@ -10251,7 +10262,7 @@
         },
         "top" : 2837,
         "visible" : true,
-        "width" : 635,
+        "width" : 700,
         "widthType" : 0
       },
       {
@@ -18542,7 +18553,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedFancyTabNav"
+              "target" : "sharedFancyTabNav",
+              "targetType" : "named"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -18636,7 +18648,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedFancyTabNav"
+              "target" : "sharedFancyTabNav",
+              "targetType" : "named"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -18730,7 +18743,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedFancyTabNav"
+              "target" : "sharedFancyTabNav",
+              "targetType" : "named"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -31215,7 +31229,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedListDeletion"
+              "target" : "sharedListDeletion",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -32881,7 +32896,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 395
+              "width" : 441
             },
             "width" : 0
           },
@@ -32891,7 +32906,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 395,
+        "width" : 441,
         "widthType" : 0
       },
       {
@@ -32971,7 +32986,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 924
+              "width" : 1024
             },
             "width" : 0
           },
@@ -32981,7 +32996,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 924,
+        "width" : 1024,
         "widthType" : 0
       },
       {
@@ -33061,7 +33076,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 823
+              "width" : 901
             },
             "width" : 0
           },
@@ -33071,7 +33086,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 823,
+        "width" : 901,
         "widthType" : 0
       },
       {
@@ -33151,7 +33166,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 459
+              "width" : 507
             },
             "width" : 0
           },
@@ -33161,7 +33176,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 459,
+        "width" : 507,
         "widthType" : 0
       },
       {
@@ -33241,7 +33256,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 337
+              "width" : 369
             },
             "width" : 0
           },
@@ -33251,7 +33266,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 337,
+        "width" : 369,
         "widthType" : 0
       },
       {
@@ -36685,7 +36700,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedHeart"
+              "target" : "sharedHeart",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -38890,7 +38906,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedCubeSwitch"
+              "target" : "sharedCubeSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -39136,7 +39153,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedCubeSwitch"
+              "target" : "sharedCubeSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -40587,7 +40605,8 @@
                   "onTapStartAction" : "unset",
                   "onTapStartSpecificIndex" : 0,
                   "onTapStartSpecificName" : "",
-                  "target" : "sharedSideMenu"
+                  "target" : "sharedSideMenu",
+                  "targetType" : "closest"
                 },
                 "codeOverrideEnabled" : false,
                 "constraintsLocked" : false,
@@ -41481,7 +41500,8 @@
                   "onTapStartAction" : "unset",
                   "onTapStartSpecificIndex" : 0,
                   "onTapStartSpecificName" : "",
-                  "target" : "sharedSideMenu"
+                  "target" : "sharedSideMenu",
+                  "targetType" : "closest"
                 },
                 "codeOverrideEnabled" : false,
                 "constraintsLocked" : false,
@@ -42778,7 +42798,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedCubeSwitch"
+              "target" : "sharedCubeSwitch",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -45773,7 +45794,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedDetailTransition"
+              "target" : "sharedDetailTransition",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -48835,7 +48857,8 @@
               "onTapStartAction" : "unset",
               "onTapStartSpecificIndex" : 0,
               "onTapStartSpecificName" : "",
-              "target" : "sharedDetailTransition"
+              "target" : "sharedDetailTransition",
+              "targetType" : "closest"
             },
             "codeOverrideEnabled" : false,
             "constraintsLocked" : false,
@@ -49010,7 +49033,7 @@
             "os" : "macos 10_15 framerx",
             "size" : {
               "height" : 86,
-              "width" : 513
+              "width" : 575
             },
             "width" : 0
           },
@@ -49020,7 +49043,7 @@
         },
         "top" : -175,
         "visible" : true,
-        "width" : 513,
+        "width" : 575,
         "widthType" : 0
       },
       {

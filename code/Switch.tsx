@@ -57,10 +57,14 @@ function _Switch(props) {
 
     const [currentStateIndex, setCurrentStateIndex] = useState(initialState)
 
-    const [id, setId] = useState(autoAssignIdentifier ? randomID() : identifier)
+    const [randomIdentifier] = useState(() => randomID())
+
+    const [id, setId] = useState(
+        autoAssignIdentifier ? randomIdentifier : identifier
+    )
 
     useEffect(() => {
-        setId(autoAssignIdentifier ? randomID() : identifier)
+        setId(autoAssignIdentifier ? randomIdentifier : identifier)
     }, [autoAssignIdentifier, identifier])
 
     const {
@@ -70,7 +74,9 @@ function _Switch(props) {
         registerSwitchStates,
     } = actions
 
-    const states = React.Children.toArray(children).map(c => c.props.name || "")
+    const states = React.Children.toArray(children).map(
+        (c) => c.props.name || ""
+    )
     const sanitizedIdentifier = sanitizePropName(id)
     const current =
         typeof currentStateIndex === "undefined"
@@ -160,8 +166,8 @@ function _Switch(props) {
     }
 
     const automaticEventProps = Object.keys(props)
-        .filter(prop => automaticEventTriggerProps.indexOf(prop) !== -1)
-        .map(prop => props[prop])
+        .filter((prop) => automaticEventTriggerProps.indexOf(prop) !== -1)
+        .map((prop) => props[prop])
 
     // execute automatic (delay) event triggers
     useEffect(() => {
@@ -178,8 +184,8 @@ function _Switch(props) {
 
     // attach key event handlers
     const keyEventProps = Object.keys(props)
-        .filter(prop => keyEventTriggerProps.indexOf(prop) !== -1)
-        .map(prop => props[prop])
+        .filter((prop) => keyEventTriggerProps.indexOf(prop) !== -1)
+        .map((prop) => props[prop])
 
     useEffect(() => {
         if (RenderTarget.current() !== RenderTarget.preview) {
@@ -270,6 +276,7 @@ function _Switch(props) {
                 width="100%"
                 height="100%"
                 overflow={overflow ? "visible" : "hidden"}
+                data-switch-id={sanitizedIdentifier}
             >
                 <Frame background={null} width="100%" height="100%">
                     <AutoAnimatedState
@@ -297,6 +304,7 @@ function _Switch(props) {
             height="100%"
             overflow={overflow ? "visible" : "hidden"}
             style={{ zIndex: 0 }}
+            data-switch-id={sanitizedIdentifier}
         >
             <AnimatePresence initial={false} custom={direction}>
                 <Frame
@@ -418,7 +426,7 @@ _Switch.defaultProps = {
 _Switch.displayName = "Switch"
 const __Switch = memo(_Switch)
 
-export const Switch = props => <__Switch {...props} />
+export const Switch = (props) => <__Switch {...props} />
 
 // ------------------- Property Controls ------------------
 
@@ -451,7 +459,7 @@ addPropertyControls(Switch, {
         title: " ",
         type: ControlType.String,
         defaultValue: defaultProps.identifier,
-        hidden: props => props.autoAssignIdentifier,
+        hidden: (props) => props.autoAssignIdentifier,
     },
 
     initialState: {
@@ -534,20 +542,20 @@ addPropertyControls(Switch, {
     transitionConfigType: {
         ...transitionPropertyControls.transitionConfigType,
         defaultValue: defaultProps["transitionConfigType"],
-        hidden: props => props["transition"] === "instant",
+        hidden: (props) => props["transition"] === "instant",
     },
 
     transitionType: {
         ...transitionPropertyControls.transitionType,
         defaultValue: defaultProps["transitionType"],
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionConfigType"] === "default",
     },
 
     damping: {
         ...transitionPropertyControls.damping,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionType"] !== "spring" ||
             props["transitionConfigType"] === "default",
@@ -556,7 +564,7 @@ addPropertyControls(Switch, {
 
     mass: {
         ...transitionPropertyControls.mass,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionType"] !== "spring" ||
             props["transitionConfigType"] === "default",
@@ -565,7 +573,7 @@ addPropertyControls(Switch, {
 
     stiffness: {
         ...transitionPropertyControls.stiffness,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionType"] !== "spring" ||
             props["transitionConfigType"] === "default",
@@ -574,7 +582,7 @@ addPropertyControls(Switch, {
 
     duration: {
         ...transitionPropertyControls.duration,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionType"] !== "tween" ||
             props["transitionConfigType"] === "default",
@@ -583,7 +591,7 @@ addPropertyControls(Switch, {
 
     ease: {
         ...transitionPropertyControls.ease,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionType"] !== "tween" ||
             props["transitionConfigType"] === "default",
@@ -592,7 +600,7 @@ addPropertyControls(Switch, {
 
     customEase: {
         ...transitionPropertyControls.customEase,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] === "instant" ||
             props["transitionType"] !== "tween" ||
             props["transitionConfigType"] === "default" ||
@@ -608,7 +616,7 @@ addPropertyControls(Switch, {
         options: ["enterdissolve", "growdissolve", "enterInstant"],
         optionTitles: ["Dissolve", "Grow", "Instant"],
         defaultValue: defaultProps.enterTransition,
-        hidden: props => props.transition !== "autoanimate",
+        hidden: (props) => props.transition !== "autoanimate",
     },
 
     // -- start: enter transition options
@@ -616,7 +624,7 @@ addPropertyControls(Switch, {
     enterTransitionConfigType: {
         ...transitionPropertyControls.transitionConfigType,
         defaultValue: defaultProps["transitionConfigType"],
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant",
     },
@@ -624,7 +632,7 @@ addPropertyControls(Switch, {
     enterTransitionType: {
         ...transitionPropertyControls.transitionType,
         defaultValue: defaultProps["transitionType"],
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionConfigType"] === "default",
@@ -632,7 +640,7 @@ addPropertyControls(Switch, {
 
     enterDamping: {
         ...transitionPropertyControls.damping,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionType"] !== "spring" ||
@@ -642,7 +650,7 @@ addPropertyControls(Switch, {
 
     enterMass: {
         ...transitionPropertyControls.mass,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionType"] !== "spring" ||
@@ -652,7 +660,7 @@ addPropertyControls(Switch, {
 
     enterStiffness: {
         ...transitionPropertyControls.stiffness,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionType"] !== "spring" ||
@@ -662,7 +670,7 @@ addPropertyControls(Switch, {
 
     enterDuration: {
         ...transitionPropertyControls.duration,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionType"] !== "tween" ||
@@ -672,7 +680,7 @@ addPropertyControls(Switch, {
 
     enterEase: {
         ...transitionPropertyControls.ease,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionType"] !== "tween" ||
@@ -682,7 +690,7 @@ addPropertyControls(Switch, {
 
     enterCustomEase: {
         ...transitionPropertyControls.customEase,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["enterTransition"] === "enterInstant" ||
             props["enterTransitionType"] !== "tween" ||
@@ -699,7 +707,7 @@ addPropertyControls(Switch, {
         options: ["exitdissolve", "shrinkdissolve", "exitInstant"],
         optionTitles: ["Dissolve", "Shrink", "Instant"],
         defaultValue: defaultProps.exitTransition,
-        hidden: props => props.transition !== "autoanimate",
+        hidden: (props) => props.transition !== "autoanimate",
     },
 
     // -- start: exit transition options
@@ -707,7 +715,7 @@ addPropertyControls(Switch, {
     exitTransitionConfigType: {
         ...transitionPropertyControls.transitionConfigType,
         defaultValue: defaultProps["transitionConfigType"],
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant",
     },
@@ -715,7 +723,7 @@ addPropertyControls(Switch, {
     exitTransitionType: {
         ...transitionPropertyControls.transitionType,
         defaultValue: defaultProps["transitionType"],
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionConfigType"] === "default",
@@ -723,7 +731,7 @@ addPropertyControls(Switch, {
 
     exitDamping: {
         ...transitionPropertyControls.damping,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionType"] !== "spring" ||
@@ -733,7 +741,7 @@ addPropertyControls(Switch, {
 
     exitMass: {
         ...transitionPropertyControls.mass,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionType"] !== "spring" ||
@@ -743,7 +751,7 @@ addPropertyControls(Switch, {
 
     exitStiffness: {
         ...transitionPropertyControls.stiffness,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionType"] !== "spring" ||
@@ -753,7 +761,7 @@ addPropertyControls(Switch, {
 
     exitDuration: {
         ...transitionPropertyControls.duration,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionType"] !== "tween" ||
@@ -763,7 +771,7 @@ addPropertyControls(Switch, {
 
     exitEase: {
         ...transitionPropertyControls.ease,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionType"] !== "tween" ||
@@ -773,7 +781,7 @@ addPropertyControls(Switch, {
 
     exitCustomEase: {
         ...transitionPropertyControls.customEase,
-        hidden: props =>
+        hidden: (props) =>
             props["transition"] !== "autoanimate" ||
             props["exitTransition"] === "exitInstant" ||
             props["exitTransitionType"] !== "tween" ||
@@ -791,7 +799,7 @@ addPropertyControls(Switch, {
         step: 0.01,
         unit: "s",
         defaultValue: defaultProps.staggerChildren,
-        hidden: props => props.transition !== "autoanimate",
+        hidden: (props) => props.transition !== "autoanimate",
     },
 
     delayChildren: {
@@ -801,7 +809,7 @@ addPropertyControls(Switch, {
         step: 0.1,
         unit: "s",
         defaultValue: defaultProps.delayChildren,
-        hidden: props => props.transition !== "autoanimate",
+        hidden: (props) => props.transition !== "autoanimate",
     },
 } as { [key: string]: ControlDescription })
 

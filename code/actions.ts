@@ -9,6 +9,13 @@ export function handleTrigger(
     const current = getSwitchStateIndex(target)
     const states = getAllSwitchStates(target)
 
+    if (typeof current === "undefined") {
+        console.warn(
+            `<Switch> Tried to modify the state of the Switch "${target}" that either doesn't exist, or doesn't have any connected states.`
+        )
+        return
+    }
+
     if (action === "specific") {
         setSwitchStateIndex(target, targetState)
     }
