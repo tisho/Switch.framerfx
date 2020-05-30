@@ -104,7 +104,7 @@ export function extractEventHandlersFromProps(
                 if (action !== "unset") {
                     const delay = props[`${event}Delay`]
                     const delayedHandler = () => {
-                        setTimeout(handler, delay * 1000)
+                        return setTimeout(handler, delay * 1000)
                     }
                     automaticEvents.push({ delay, handler: delayedHandler })
                 }

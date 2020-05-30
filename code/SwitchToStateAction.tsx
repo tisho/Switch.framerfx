@@ -72,8 +72,10 @@ function _SwitchToStateAction(props) {
         ) as HTMLElement | null
 
         if (closestSwitch) {
-            const id = closestSwitch.dataset.switchId
-            setTargetId(sanitizePropName(id))
+            const id = sanitizePropName(closestSwitch.dataset.switchId)
+            if (targetId !== id) {
+                setTargetId(id)
+            }
         }
     }, [targetType, ref.current])
 
