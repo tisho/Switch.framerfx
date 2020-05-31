@@ -97,7 +97,7 @@ const _AutoAnimatedState = ({
 
     const sourceStateChildrenIds = sourceStateChildren.map(getNodeId)
 
-    targetStateChildren.forEach(child => {
+    targetStateChildren.forEach((child) => {
         const name = getNodeName(child)
         const id = getNodeId(child)
 
@@ -107,7 +107,7 @@ const _AutoAnimatedState = ({
         }
 
         // find the first match by name that's not already in the morphing children list
-        const match = sourceStateChildren.find(otherChild => {
+        const match = sourceStateChildren.find((otherChild) => {
             const otherName = getNodeName(otherChild)
             const otherId = getNodeId(otherChild)
 
@@ -129,7 +129,7 @@ const _AutoAnimatedState = ({
     })
 
     // exiting children will be all children from the current state that haven't been tagged as morphing
-    sourceStateChildren.forEach(child => {
+    sourceStateChildren.forEach((child) => {
         const id = getNodeId(child)
         if (morphingChildrenIds.indexOf(id) === -1) {
             exitingChildrenIds.push(id)
@@ -141,20 +141,20 @@ const _AutoAnimatedState = ({
     // step 1: replace morphing children with their equivalents from current state
     // morphing children will be evaluated separately, so the fact that we're using
     // the source child in this stage of the hierarchy doesn't mean much.
-    const targetHierarchy = targetStateChildren.map(child => {
+    const targetHierarchy = targetStateChildren.map((child) => {
         const id = getNodeId(child)
-        const morphingPair = morphingChildrenPairs.find(c => c.target === id)
+        const morphingPair = morphingChildrenPairs.find((c) => c.target === id)
 
         if (morphingPair) {
             return sourceStateChildren.find(
-                c => getNodeId(c) === morphingPair.source
+                (c) => getNodeId(c) === morphingPair.source
             )
         }
         return child
     })
 
     // step 2: place exiting children back into the hierarchy
-    exitingChildrenIds.forEach(id => {
+    exitingChildrenIds.forEach((id) => {
         const index = sourceStateChildrenIds.indexOf(id)
         let closestMorphingChildId
 
@@ -166,9 +166,9 @@ const _AutoAnimatedState = ({
         }
 
         const indexOfClosestMorphingChild = targetHierarchy.findIndex(
-            c => getNodeId(c) === closestMorphingChildId
+            (c) => getNodeId(c) === closestMorphingChildId
         )
-        const child = sourceStateChildren.find(c => getNodeId(c) === id)
+        const child = sourceStateChildren.find((c) => getNodeId(c) === id)
 
         if (typeof indexOfClosestMorphingChild !== "undefined") {
             targetHierarchy.splice(indexOfClosestMorphingChild + 1, 0, child)
@@ -179,12 +179,12 @@ const _AutoAnimatedState = ({
 
     // ------------ Build Final Hierarchy with Animated Elements --------------
 
-    const animatedHierarchy = targetHierarchy.map(child => {
+    const animatedHierarchy = targetHierarchy.map((child) => {
         const id = getNodeId(child)
-        const morphingPair = morphingChildrenPairs.find(c => c.source === id)
+        const morphingPair = morphingChildrenPairs.find((c) => c.source === id)
         if (morphingPair) {
             const targetChild = targetStateChildren.find(
-                c => getNodeId(c) === morphingPair.target
+                (c) => getNodeId(c) === morphingPair.target
             )
 
             const key = getSourceKey(targetChild.key, child.key)
@@ -306,7 +306,9 @@ const _AutoAnimatedState = ({
             // delay animation until after the next paint / layout, so animations
             // can start from the correct values
             requestAnimationFrame(() =>
-                setTimeout(() => controls.start(nextVariantName), 0)
+                setTimeout(() => {
+                    controls.start(nextVariantName)
+                }, 0)
             )
         }
     }, [source, target, controls, initialVariantName, nextVariantName])
@@ -362,9 +364,13 @@ const _AutoAnimatedState = ({
         })
 
         const key = getSourceKey(sourceKey, source.key)
+        const keyForEnteringChild =
+            direction === 1 ? `__enter_${key}` : `__exit_${key}`
+
+        const sameSourceAndTarget = source.key === target.key
 
         let enteringChildProps = {
-            key: direction === 1 ? `__enter_${key}` : `__exit_${key}`,
+            key: keyForEnteringChild,
             ...propsForPositionReset,
             ...pick(sourcePositionAndSizeProps, ["top", "left"]),
             ...pick(targetPositionAndSizeProps, ["width", "height"]),
@@ -389,8 +395,15 @@ const _AutoAnimatedState = ({
             ? enteringChildProps
             : filterOutAbsolutePositioningProps(enteringChildProps)
 
+        const keyForExitingChild =
+            direction === 1 ? `__exit_${key}` : `__enter_${key}`
+
         let exitingChildProps = {
-            key: direction === 1 ? `__exit_${key}` : `__enter_${key}`,
+            key: keyForExitingChild,
+            // disable magic motion for same source-target transitions, because otherwise
+            // the layout of the exiting child will get cached by motion, and any subsequent
+            // animations will use it as a starting point, which will cause a noticeable flicker.
+            _canMagicMotion: !sameSourceAndTarget,
             ...propsForPositionReset,
             ...sourcePositionAndSizeProps,
             originX: 0,
