@@ -1,4 +1,14 @@
 import * as React from "react"
+import {
+    Frame,
+    FrameWithMotion,
+    Text,
+    Vector,
+    VectorGroup,
+    ComponentContainer,
+    SVG,
+    Stack,
+} from "framer"
 import { calculateRect } from "./calculateRect"
 import { rectAsStyleProps } from "./styleParsing"
 import { randomID } from "./randomID"
@@ -70,6 +80,38 @@ export const getNodeName = (node) => {
 export const getNodeId = (node) => node.props.id
 export const getNodeTypeName = (node) => {
     if (node.type) {
+        if (node.type === Frame) {
+            return "Frame"
+        }
+
+        if (node.type === FrameWithMotion) {
+            return "FrameWithMotion"
+        }
+
+        if (node.type === Vector) {
+            return "Vector"
+        }
+
+        if (node.type === VectorGroup) {
+            return "VectorGroup"
+        }
+
+        if (node.type === Text) {
+            return "Text"
+        }
+
+        if (node.type === ComponentContainer) {
+            return "ComponentContainer"
+        }
+
+        if (node.type === SVG) {
+            return "SVG"
+        }
+
+        if (node.type === Stack) {
+            return "Stack"
+        }
+
         if ("displayName" in node.type) {
             return node.type.displayName
         }
