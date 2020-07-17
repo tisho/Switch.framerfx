@@ -28,13 +28,13 @@ const nonAnimatableChildrenNodeTypes = [
 
 const animatableNodeTypes = ["Frame", "StackLegacyContainer", "Stack"]
 
-export const isNodeAnimatable = node =>
+export const isNodeAnimatable = (node) =>
     animatableNodeTypes.indexOf(getNodeType(node)) !== -1
 
-export const canAnimateNodeChildren = node =>
+export const canAnimateNodeChildren = (node) =>
     nonAnimatableChildrenNodeTypes.indexOf(getNodeType(node)) === -1
 
-export const isFrameLike = node => {
+export const isFrameLike = (node) => {
     return (
         node.props &&
         "_constraints" in node.props &&
@@ -45,7 +45,7 @@ export const isFrameLike = node => {
     )
 }
 
-export const hasOverrides = node => {
+export const hasOverrides = (node) => {
     const name = getNodeTypeName(node)
 
     return (
@@ -55,7 +55,7 @@ export const hasOverrides = node => {
     )
 }
 
-export const getNodeName = node => {
+export const getNodeName = (node) => {
     if (
         node.props &&
         typeof node.props.name !== "undefined" &&
@@ -67,8 +67,8 @@ export const getNodeName = node => {
     return getNodeType(node)
 }
 
-export const getNodeId = node => node.props.id
-export const getNodeTypeName = node => {
+export const getNodeId = (node) => node.props.id
+export const getNodeTypeName = (node) => {
     if (node.type) {
         if ("displayName" in node.type) {
             return node.type.displayName
@@ -90,14 +90,14 @@ export const getNodeTypeName = node => {
     return undefined
 }
 
-const isVectorWrapper = node => {
+const isVectorWrapper = (node) => {
     // if all children are of type Vector or VectorGroup, this is a vector wrapper
     const children = React.Children.toArray(node.props.children || [])
 
     return (
         children.length > 0 &&
         children.every(
-            child =>
+            (child) =>
                 [nodeTypeMap.Vector, nodeTypeMap.VectorGroup].indexOf(
                     getNodeType(child)
                 ) !== -1
@@ -105,7 +105,7 @@ const isVectorWrapper = node => {
     )
 }
 
-export const getNodeType = node => {
+export const getNodeType = (node) => {
     const name = getNodeTypeName(node)
 
     // Known Frame case - Frames could be Vector Wrappers or regular frames
@@ -119,7 +119,8 @@ export const getNodeType = node => {
     }
 
     // Unknown types and Frames with Overrides
-    if (typeof name === "undefined" || hasOverrides(node)) {
+    // name will be "" (empty string) when the component was created using an anonymous function
+    if (typeof name === "undefined" || name === "" || hasOverrides(node)) {
         // Test for an overridden Legacy Stack (a component container underneath)
         if (isLegacyStack(node)) {
             return nodeTypeMap.StackLegacyContainer
@@ -145,7 +146,7 @@ export const getNodeType = node => {
 
 // Refines the node type of a Frame to either a VectorWrapper, or a regular Frame.
 // The passed in node is assumed to be a Frame/FrameWithMotion or a Frame-like component.
-const getRefinedFrameType = node => {
+const getRefinedFrameType = (node) => {
     if (isVectorWrapper(node)) {
         return nodeTypeMap.VectorWrapper
     }
@@ -153,7 +154,7 @@ const getRefinedFrameType = node => {
     return nodeTypeMap.Frame
 }
 
-export const isLegacyStack = node =>
+export const isLegacyStack = (node) =>
     "componentIdentifier" in node.props &&
     node.props.componentIdentifier === "framer/Stack"
 
@@ -176,7 +177,7 @@ export const getNodeRect = (node, parentSize) => {
     return rectAsStyleProps(rect)
 }
 
-export const nodeWithIdAndKey = node => {
+export const nodeWithIdAndKey = (node) => {
     let id = getNodeId(node)
     id = typeof id === "undefined" || id === null ? randomID() : id
     const key =
@@ -185,7 +186,7 @@ export const nodeWithIdAndKey = node => {
     return React.cloneElement(node, { key, id })
 }
 
-export const getNodeChildren = node => {
+export const getNodeChildren = (node) => {
     const nodeType = getNodeType(node)
     let children = node.props.children
 
@@ -197,6 +198,6 @@ export const getNodeChildren = node => {
     return React.Children.map(children, nodeWithIdAndKey)
 }
 
-export const isNodeVisible = node => {
+export const isNodeVisible = (node) => {
     return node.props && node.props.visible
 }
