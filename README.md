@@ -8,6 +8,10 @@
 
 # Latest Release
 
+7/17/2020
+
+-   FIX: Fixed an issue that could prevent Auto-Animate from working on some versions of Framer Web.
+
 5/29/2020
 
 -   NEW: Added the ability for SwitchToStateAction to control the closest parent Switch, instead of needing to specify the name of a Switch to control. This helps tremendously when using Switch in reusable components, or multi-step animations, and takes away the need to even set a name for most Switches. I've reconfigured a lot of the existing examples to take advantage of this, so take a look if you're wondering how to set it up.
