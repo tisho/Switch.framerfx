@@ -20,8 +20,7 @@ export const addAnimatableWrapperToNodeIfNeeded = (
     const needsWrapper =
         ["Frame", "VectorWrapper", "AnimatableWrapper", "Stack"].indexOf(
             nodeType
-        ) === -1 ||
-        (nodeType === "Frame" && hasOverrides(node))
+        ) === -1
 
     return needsWrapper ? (
         <AnimatableWrapper key={node.key} name={getNodeName(node)}>
