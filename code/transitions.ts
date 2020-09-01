@@ -34,7 +34,7 @@ const EASINGS = {
 }
 
 export const transitionOptionsFromProps = (props, prefix = null) => {
-    const getProp = n => props[prefixPropName(n, prefix)]
+    const getProp = (n) => props[prefixPropName(n, prefix)]
     const type = getProp("transitionType")
 
     if (type === "tween") {
@@ -43,9 +43,7 @@ export const transitionOptionsFromProps = (props, prefix = null) => {
             duration: getProp("duration"),
             ease:
                 getProp("ease") === "custom"
-                    ? getProp("customEase")
-                          .split(/,\s+/)
-                          .map(parseFloat)
+                    ? getProp("customEase").split(/,\s+/).map(parseFloat)
                     : EASINGS[getProp("ease")],
         }
     }
@@ -98,7 +96,7 @@ export const TRANSITIONS = {
                     ? { opacity: 0, scale: 1.15, zIndex: 0 }
                     : { opacity: 0, scale: 0.85, zIndex: 1 },
             enter: { opacity: [1, 1], scale: 1 },
-            exit: direction =>
+            exit: (direction) =>
                 direction === 1
                     ? { scale: 0.85, opacity: 0, zIndex: 0 }
                     : { opacity: 0, scale: 1.15, zIndex: 1 },
@@ -176,7 +174,7 @@ export const TRANSITIONS = {
                     ? { x: containerProps.width, zIndex: 1 }
                     : { x: 0, zIndex: 0 },
             enter: { x: 0, opacity: 1 },
-            exit: direction => {
+            exit: (direction) => {
                 return direction === -1
                     ? { x: containerProps.width, zIndex: 1 }
                     : { opacity: [1, 1, 0], zIndex: 0 }
@@ -201,7 +199,7 @@ export const TRANSITIONS = {
                     ? { y: containerProps.height, zIndex: 1 }
                     : { y: 0, zIndex: 0 },
             enter: { y: 0, opacity: 1 },
-            exit: direction => {
+            exit: (direction) => {
                 return direction === -1
                     ? { y: containerProps.height, zIndex: 1 }
                     : { opacity: [1, 1, 0], zIndex: 0 }
@@ -262,7 +260,7 @@ export const TRANSITIONS = {
                     ? { x: containerProps.width }
                     : { x: -containerProps.width },
             enter: { x: 0 },
-            exit: direction =>
+            exit: (direction) =>
                 direction === -1
                     ? { x: containerProps.width, opacity: [1, 1, 1, 0] }
                     : { x: -containerProps.width, opacity: [1, 1, 1, 0] },
@@ -286,7 +284,7 @@ export const TRANSITIONS = {
                     ? { y: containerProps.height }
                     : { y: -containerProps.height },
             enter: { y: 0 },
-            exit: direction =>
+            exit: (direction) =>
                 direction === -1
                     ? { y: containerProps.height, opacity: [1, 1, 1, 0] }
                     : { y: -containerProps.height, opacity: [1, 1, 1, 0] },
