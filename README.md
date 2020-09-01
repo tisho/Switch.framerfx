@@ -206,6 +206,8 @@ To control Switches from code, first import the `useSwitch` hook at the top of y
 import { useSwitch } from "@framer/tishogeorgiev.switch/code"
 ```
 
+**Note on Framer Web**: Sometimes Web will throw an error in the in-app preview saying it can't find `useSwitch`. This is because it hasn't had time to reload all of its dependencies. When this happens, refresh your browser and it should be fine.
+
 **Note**: You will likely get a red underline under `@framer/tishogeorgiev.switch/code`, with an error message like "Cannot find module '@framer/tishogeorgiev.switch/code'". You can safely ignore this error, as the code will work anyway. If it bothers you, import `useSwitch` like this, instead:
 
 ```
