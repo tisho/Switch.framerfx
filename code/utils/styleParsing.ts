@@ -403,41 +403,51 @@ export const getBoxShadow = (style) => {
 }
 
 export const getBorderRadius = (style) => {
-    if (
-        typeof style === "undefined" ||
-        typeof style.borderRadius === "undefined" ||
-        style.borderRadius === null
-    ) {
-        return {
-            borderTopLeftRadius: "0px",
-            borderTopRightRadius: "0px",
-            borderBottomRightRadius: "0px",
-            borderBottomLeftRadius: "0px",
-        }
+    const result = {
+        borderTopLeftRadius: "0px",
+        borderTopRightRadius: "0px",
+        borderBottomRightRadius: "0px",
+        borderBottomLeftRadius: "0px",
     }
 
+    if (typeof style === "undefined") return result
+
     // single value
-    if (style.borderRadius.split(" ").length === 1) {
-        return {
-            borderTopLeftRadius: style.borderRadius,
-            borderTopRightRadius: style.borderRadius,
-            borderBottomRightRadius: style.borderRadius,
-            borderBottomLeftRadius: style.borderRadius,
-        }
+    if (
+        typeof style.borderRadius === "string" &&
+        style.borderRadius.split(" ").length === 1
+    ) {
+        result.borderTopLeftRadius = style.borderRadius
+        result.borderTopRightRadius = style.borderRadius
+        result.borderBottomRightRadius = style.borderRadius
+        result.borderBottomLeftRadius = style.borderRadius
     }
 
     // four values
-    if (style.borderRadius.split(" ").length === 4) {
+    if (
+        typeof style.borderRadius === "string" &&
+        style.borderRadius.split(" ").length === 4
+    ) {
         const values = style.borderRadius.split(" ")
-        return {
-            borderTopLeftRadius: values[0],
-            borderTopRightRadius: values[1],
-            borderBottomRightRadius: values[2],
-            borderBottomLeftRadius: values[3],
+        result.borderTopLeftRadius = values[0]
+        result.borderTopRightRadius = values[1]
+        result.borderBottomRightRadius = values[2]
+        result.borderBottomLeftRadius = values[3]
+    }
+
+    // separate values
+    for (let prop of [
+        "borderTopLeftRadius",
+        "borderTopRightRadius",
+        "borderBottomRightRadius",
+        "borderBottomLeftRadius",
+    ]) {
+        if (typeof style[prop] === "string") {
+            result[prop] = style[prop]
         }
     }
 
-    return {}
+    return result
 }
 
 export const getBorderPair = (sourceProps, targetProps) => {
