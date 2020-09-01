@@ -8,6 +8,10 @@
 
 # Latest Release
 
+9/01/2020
+
+-   FIX: Fixed an issue that could cause border radius properties to not be parsed correctly.
+
 7/17/2020
 
 -   FIX: Fixed an issue that could prevent Auto-Animate from working on some versions of Framer Web.
