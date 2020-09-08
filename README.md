@@ -8,17 +8,13 @@
 
 # Latest Release
 
+9/08/2020
+
+-   FIX: Addressed compatibility issues with the version of Framer Motion 2 used in an upcoming release of Framer (Thanks @hemlok). **NOTE** If your prototype suddenly has glitchy/broken animations, you should update to this version (open the insert menu by pressing `I`, then go to the Switch package and wait for the "Update" button to show up). Let me know if you continue to have problems after.
+
 9/01/2020
 
 -   FIX: Fixed an issue that could cause border radius properties to not be parsed correctly.
-
-7/17/2020
-
--   FIX: Fixed an issue that could prevent Auto-Animate from working on some versions of Framer Web.
-
-5/29/2020
-
--   NEW: Added the ability for SwitchToStateAction to control the closest parent Switch, instead of needing to specify the name of a Switch to control. This helps tremendously when using Switch in reusable components, or multi-step animations, and takes away the need to even set a name for most Switches. I've reconfigured a lot of the existing examples to take advantage of this, so take a look if you're wondering how to set it up.
 
 **[→ See past releases](#past-releases)**
 
@@ -274,6 +270,14 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+7/17/2020
+
+-   FIX: Fixed an issue that could prevent Auto-Animate from working on some versions of Framer Web.
+
+5/29/2020
+
+-   NEW: Added the ability for SwitchToStateAction to control the closest parent Switch, instead of needing to specify the name of a Switch to control. This helps tremendously when using Switch in reusable components, or multi-step animations, and takes away the need to even set a name for most Switches. I've reconfigured a lot of the existing examples to take advantage of this, so take a look if you're wondering how to set it up.
 
 5/26/2020
 
