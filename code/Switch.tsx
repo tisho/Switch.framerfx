@@ -34,6 +34,7 @@ import { extractEventHandlersFromProps } from "./utils/extractEventHandlersFromP
 import { AutoAnimatedState } from "./AutoAnimatedState"
 import { sanitizePropName } from "./utils/propNameHelpers"
 import { randomID } from "./utils/randomID"
+import { PreventLayoutIdGeneration } from "./PreventLayoutIdGeneration"
 
 // ------------------- Switch Component -------------------
 
@@ -279,17 +280,21 @@ function _Switch(props) {
                 data-switch-id={sanitizedIdentifier}
             >
                 <Frame background={null} width="100%" height="100%">
-                    <AutoAnimatedState
-                        source={children[previousIndexRef.current]}
-                        target={children[currentIndexRef.current]}
-                        transitionPropsForElement={transitionPropsForElement}
-                        direction={direction}
-                        sourceParentSize={size}
-                        targetParentSize={size}
-                        morphCodeComponentPropsOnly={
-                            morphCodeComponentPropsOnly
-                        }
-                    />
+                    <PreventLayoutIdGeneration>
+                        <AutoAnimatedState
+                            source={children[previousIndexRef.current]}
+                            target={children[currentIndexRef.current]}
+                            transitionPropsForElement={
+                                transitionPropsForElement
+                            }
+                            direction={direction}
+                            sourceParentSize={size}
+                            targetParentSize={size}
+                            morphCodeComponentPropsOnly={
+                                morphCodeComponentPropsOnly
+                            }
+                        />
+                    </PreventLayoutIdGeneration>
                 </Frame>
             </Frame>
         )
@@ -306,17 +311,23 @@ function _Switch(props) {
             style={{ zIndex: 0 }}
             data-switch-id={sanitizedIdentifier}
         >
-            <AnimatePresence initial={false} custom={direction}>
-                <Frame
-                    key={child.key}
-                    background={null}
-                    width="100%"
-                    height="100%"
-                    {...TRANSITIONS[transition](child.props, props, direction)}
-                >
-                    {child}
-                </Frame>
-            </AnimatePresence>
+            <PreventLayoutIdGeneration>
+                <AnimatePresence initial={false} custom={direction}>
+                    <Frame
+                        key={child.key}
+                        background={null}
+                        width="100%"
+                        height="100%"
+                        {...TRANSITIONS[transition](
+                            child.props,
+                            props,
+                            direction
+                        )}
+                    >
+                        {child}
+                    </Frame>
+                </AnimatePresence>
+            </PreventLayoutIdGeneration>
         </Frame>
     )
 }
