@@ -1,6 +1,7 @@
 import * as React from "react"
 import { useState, useEffect, memo, cloneElement } from "react"
 import { Size, useAnimation } from "framer"
+import * as Framer from "framer"
 import { getCache } from "./store/keyStore"
 import { pick } from "./utils/pick"
 import { randomID } from "./utils/randomID"
@@ -27,6 +28,8 @@ import {
     isSameComponent,
 } from "./utils/nodeHelpers"
 import { addAnimatableWrapperToNodeIfNeeded } from "./utils/addAnimatableWrapperToNodeIfNeeded"
+
+const motionSupportsLayoutProp = "AnimateLayoutFeature" in Framer
 
 const propsForPositionReset = {
     top: null,
@@ -555,15 +558,21 @@ const _AutoAnimatedState = ({
         const sourceComponent = React.Children.toArray(source.props.children)[0]
         const targetComponent = React.Children.toArray(target.props.children)[0]
 
+        const layoutTransitionProps = motionSupportsLayoutProp
+            ? { layout: !useAbsolutePositioning }
+            : {
+                  positionTransition: useAbsolutePositioning
+                      ? false
+                      : transitionPropsForElement({
+                            source,
+                            target,
+                            transition: "morph",
+                        }).transition,
+              }
+
         const containerProps = {
             ...transitionProps,
-            positionTransition: useAbsolutePositioning
-                ? false
-                : transitionPropsForElement({
-                      source,
-                      target,
-                      transition: "morph",
-                  }).transition,
+            ...layoutTransitionProps,
             key,
         }
 
@@ -596,18 +605,26 @@ const _AutoAnimatedState = ({
         key,
     })
 
+    // `positionTransition` is deprecated in Motion 2, and produces unexpected results when
+    // used inside of Framer.
+    const layoutTransitionProps = motionSupportsLayoutProp
+        ? { layout: !useAbsolutePositioning }
+        : {
+              positionTransition: useAbsolutePositioning
+                  ? false
+                  : transitionPropsForElement({
+                        source,
+                        target,
+                        transition: "morph",
+                    }).transition,
+          }
+
     return cloneElement(
         wrappedTarget,
         {
             id: null,
             ...transitionProps,
-            positionTransition: useAbsolutePositioning
-                ? false
-                : transitionPropsForElement({
-                      source,
-                      target,
-                      transition: "morph",
-                  }).transition,
+            ...layoutTransitionProps,
             key,
         },
         [<React.Fragment key={key}>{animatedHierarchy}</React.Fragment>]
