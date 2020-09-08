@@ -1,9 +1,9 @@
 import * as Framer from "framer"
 import * as React from "react"
 
-export function PreventLayoutIdGeneration(props: {
+const _PreventLayoutIdGeneration = (props: {
     children: React.ReactNode | React.ReactNode[]
-}) {
+}) => {
     const context = React.useRef({
         getLayoutId: (args) => null,
         persistLayoutIdCache: () => {},
@@ -21,3 +21,5 @@ export function PreventLayoutIdGeneration(props: {
 
     return <>{props.children}</>
 }
+
+export const PreventLayoutIdGeneration = _PreventLayoutIdGeneration as any
