@@ -390,7 +390,7 @@ const _AutoAnimatedState = ({
                 ...enteringChildVariants,
             },
             initial: initialVariantName,
-            animate: controls,
+            animate: isRoot ? controls : undefined,
             ...enterTransitionProps,
         }
 
@@ -418,7 +418,7 @@ const _AutoAnimatedState = ({
                 ...exitingChildVariants,
             },
             initial: initialVariantName,
-            animate: controls,
+            animate: isRoot ? controls : undefined,
             ...exitTransitionProps,
         }
 
@@ -482,7 +482,7 @@ const _AutoAnimatedState = ({
             [nextVariantName]: nextVariant,
         },
         initial: initialVariantName,
-        animate: controls,
+        animate: isRoot ? controls : undefined,
         ...transitionPropsForElement({
             source,
             target,
