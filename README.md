@@ -8,6 +8,10 @@
 
 # Latest Release
 
+10/07/2020
+
+-   FIX: Fixed an issue that prevented Auto Animate from running on latest version of Framer Motion (Thanks, Victor).
+
 9/08/2020
 
 -   FIX: Addressed compatibility issues with the version of Framer Motion 2 used in an upcoming release of Framer (Thanks @hemlok). **NOTE** If your prototype suddenly has glitchy/broken animations, you should update to this version (open the insert menu by pressing `I`, then go to the Switch package and wait for the "Update" button to show up). Let me know if you continue to have problems after.
