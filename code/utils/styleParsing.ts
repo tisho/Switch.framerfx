@@ -442,7 +442,10 @@ export const getBorderRadius = (style) => {
         "borderBottomRightRadius",
         "borderBottomLeftRadius",
     ]) {
-        if (typeof style[prop] === "string") {
+        if (
+            typeof style[prop] === "string" ||
+            (typeof style[prop] === "number" && !Number.isNaN(style[prop]))
+        ) {
             result[prop] = style[prop]
         }
     }
