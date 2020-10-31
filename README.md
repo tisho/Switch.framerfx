@@ -8,6 +8,10 @@
 
 # Latest Release
 
+10/30/2020
+
+-   FIX: Fixed an issue where border radius wasn't being parsed correctly when using Auto Animate (Thanks, @astegmaier).
+
 10/07/2020
 
 -   FIX: Fixed an issue that prevented Auto Animate from running on latest version of Framer Motion (Thanks, Victor).
