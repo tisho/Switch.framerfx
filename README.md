@@ -8,6 +8,11 @@
 
 # Latest Release
 
+12/17/2020
+
+-   FIX: Compatibility fixes for latest version of Framer that resolve issues
+    with animating border radii and gradient fills.
+
 10/30/2020
 
 -   FIX: Fixed an issue where border radius wasn't being parsed correctly when using Auto Animate (Thanks, @astegmaier).
