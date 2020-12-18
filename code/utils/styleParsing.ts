@@ -22,6 +22,14 @@ export const getColorType = (colorObject) => {
     }
 
     if (typeof colorObject === "string") {
+        if (colorObject.startsWith("linear-gradient")) {
+            return "linear-gradient"
+        }
+
+        if (colorObject.startsWith("radial-gradient")) {
+            return "radial-gradient"
+        }
+
         return "plain"
     }
 
@@ -40,9 +48,100 @@ export const getColorType = (colorObject) => {
     return "plain"
 }
 
+function parseColorStops(colorStopsCSS: string) {
+    return colorStopsCSS
+        .split(/, (?=[a-z])/)
+        .map((stopCSS) => {
+            const stopMatch = stopCSS.match(/(.*\)) ([\d\.]+)%$/)
+            if (stopMatch) {
+                return {
+                    value: stopMatch[1],
+                    position: parseFloat(stopMatch[2]) / 100,
+                }
+            }
+            return null
+        })
+        .filter(Boolean)
+}
+
+function linearGradientFromCSS(css: string) {
+    if (!css.startsWith("linear-gradient(")) return null
+
+    const match = css.match(/linear-gradient\((\d+)deg, (.*)\)/)
+    if (match) {
+        const angle = parseFloat(match[1])
+        const stops = parseColorStops(match[2])
+
+        return {
+            angle,
+            stops,
+        }
+    }
+
+    return null
+}
+
+function radialGradientFromCSS(css: string) {
+    if (!css.startsWith("radial-gradient(")) return null
+
+    const match = css.match(
+        /radial-gradient\(([\d\.]+)% ([\d\.]+)% at ([\d\.]+)% ([\d\.]+)%, (.*)\)/
+    )
+    if (match) {
+        const widthFactor = parseFloat(match[1]) / 100
+        const heightFactor = parseFloat(match[2]) / 100
+        const centerAnchorX = parseFloat(match[3]) / 100
+        const centerAnchorY = parseFloat(match[4]) / 100
+        const stops = parseColorStops(match[5])
+
+        return {
+            widthFactor,
+            heightFactor,
+            centerAnchorX,
+            centerAnchorY,
+            stops,
+        }
+    }
+    return null
+}
+
 export const getBackgroundColorPair = (sourceProps, targetProps) => {
-    const sourceColorType = getColorType(sourceProps.background)
-    const targetColorType = getColorType(targetProps.background)
+    let sourceColorSource = sourceProps.background
+    if (!sourceColorSource && sourceProps.style) {
+        sourceColorSource =
+            sourceProps.style.backgroundColor || sourceProps.style.background
+    }
+    let targetColorSource = targetProps.background
+    if (!targetColorSource && targetProps.style) {
+        targetColorSource =
+            targetProps.style.backgroundColor || targetProps.style.background
+    }
+
+    const sourceColorType = getColorType(sourceColorSource)
+    const targetColorType = getColorType(targetColorSource)
+
+    if (
+        typeof sourceColorSource === "string" &&
+        (sourceColorType === "linear-gradient" ||
+            sourceColorType === "radial-gradient")
+    ) {
+        sourceColorSource =
+            sourceColorType === "linear-gradient"
+                ? linearGradientFromCSS(sourceColorSource)
+                : radialGradientFromCSS(sourceColorSource)
+    }
+
+    if (
+        typeof targetColorSource === "string" &&
+        (targetColorType === "linear-gradient" ||
+            targetColorType === "radial-gradient")
+    ) {
+        targetColorSource =
+            targetColorType === "linear-gradient"
+                ? linearGradientFromCSS(targetColorSource)
+                : radialGradientFromCSS(targetColorSource)
+    }
+
     let sourceLinear
     let targetLinear
     let sourceRadial
@@ -81,27 +180,27 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
         }
 
         if (sourceColorType === "linear-gradient") {
-            sourceLinear = linearGradientFromGradient(sourceProps.background)
+            sourceLinear = linearGradientFromGradient(sourceColorSource)
             sourceRadial = radialGradientFromGradient(
-                sourceProps.background,
+                sourceColorSource,
                 0 // alpha
             )
             const targetColor = getPlainBackgroundColor(targetProps)
             targetLinear = linearGradientFromColor(
                 targetColor,
-                sourceProps.background.angle
+                sourceColorSource.angle
             )
             targetRadial = radialGradientFromColor(transparent(targetColor))
         }
 
         if (sourceColorType === "radial-gradient") {
-            sourceRadial = radialGradientFromGradient(sourceProps.background)
+            sourceRadial = radialGradientFromGradient(sourceColorSource)
             const {
                 widthFactor,
                 heightFactor,
                 centerAnchorX,
                 centerAnchorY,
-            } = sourceProps.background
+            } = sourceColorSource
 
             const gradientShape = `${widthFactor * 100}% ${heightFactor * 100}%`
             const gradientPosition = `${centerAnchorX * 100}% ${
@@ -124,32 +223,32 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
             const sourceColor = getPlainBackgroundColor(sourceProps)
             sourceLinear =
                 sourceColorType === "none"
-                    ? linearGradientFromGradient(targetProps.background, 0)
+                    ? linearGradientFromGradient(targetColorSource, 0)
                     : linearGradientFromColor(
                           sourceColor,
-                          targetProps.background.angle
+                          targetColorSource.angle
                       )
             sourceRadial =
                 sourceColorType === "none"
-                    ? radialGradientFromGradient(targetProps.background, 0)
+                    ? radialGradientFromGradient(targetColorSource, 0)
                     : radialGradientFromColor(transparent(sourceColor))
 
-            targetLinear = linearGradientFromGradient(targetProps.background)
-            targetRadial = radialGradientFromGradient(targetProps.background, 0)
+            targetLinear = linearGradientFromGradient(targetColorSource)
+            targetRadial = radialGradientFromGradient(targetColorSource, 0)
         }
 
         if (sourceColorType === "linear-gradient") {
-            sourceLinear = linearGradientFromGradient(sourceProps.background)
-            sourceRadial = radialGradientFromGradient(sourceProps.background, 0)
-            targetLinear = linearGradientFromGradient(targetProps.background)
-            targetRadial = radialGradientFromGradient(targetProps.background, 0)
+            sourceLinear = linearGradientFromGradient(sourceColorSource)
+            sourceRadial = radialGradientFromGradient(sourceColorSource, 0)
+            targetLinear = linearGradientFromGradient(targetColorSource)
+            targetRadial = radialGradientFromGradient(targetColorSource, 0)
         }
 
         if (sourceColorType === "radial-gradient") {
-            sourceLinear = linearGradientFromGradient(sourceProps.background, 0)
-            sourceRadial = radialGradientFromGradient(sourceProps.background)
-            targetLinear = linearGradientFromGradient(targetProps.background)
-            targetRadial = radialGradientFromGradient(targetProps.background, 0)
+            sourceLinear = linearGradientFromGradient(sourceColorSource, 0)
+            sourceRadial = radialGradientFromGradient(sourceColorSource)
+            targetLinear = linearGradientFromGradient(targetColorSource)
+            targetRadial = radialGradientFromGradient(targetColorSource, 0)
         }
     }
 
@@ -162,7 +261,7 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
                 heightFactor,
                 centerAnchorX,
                 centerAnchorY,
-            } = targetProps.background
+            } = targetColorSource
 
             const gradientShape = `${widthFactor * 100}% ${heightFactor * 100}%`
             const gradientPosition = `${centerAnchorX * 100}% ${
@@ -171,11 +270,11 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
 
             sourceLinear =
                 sourceColorType === "none"
-                    ? linearGradientFromGradient(targetProps.background, 0)
+                    ? linearGradientFromGradient(targetColorSource, 0)
                     : linearGradientFromColor(transparent(sourceColor))
             targetLinear =
                 sourceColorType === "none"
-                    ? linearGradientFromGradient(targetProps.background, 0)
+                    ? linearGradientFromGradient(targetColorSource, 0)
                     : linearGradientFromColor(transparent(sourceColor))
 
             sourceRadial = radialGradientFromColor(
@@ -183,21 +282,21 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
                 gradientShape,
                 gradientPosition
             )
-            targetRadial = radialGradientFromGradient(targetProps.background)
+            targetRadial = radialGradientFromGradient(targetColorSource)
         }
 
         if (sourceColorType === "linear-gradient") {
-            sourceLinear = linearGradientFromGradient(sourceProps.background)
-            sourceRadial = radialGradientFromGradient(sourceProps.background, 0)
-            targetRadial = radialGradientFromGradient(targetProps.background)
-            targetLinear = linearGradientFromGradient(targetProps.background, 0)
+            sourceLinear = linearGradientFromGradient(sourceColorSource)
+            sourceRadial = radialGradientFromGradient(sourceColorSource, 0)
+            targetRadial = radialGradientFromGradient(targetColorSource)
+            targetLinear = linearGradientFromGradient(targetColorSource, 0)
         }
 
         if (sourceColorType === "radial-gradient") {
-            sourceLinear = linearGradientFromGradient(sourceProps.background, 0)
-            sourceRadial = radialGradientFromGradient(sourceProps.background)
-            targetLinear = linearGradientFromGradient(targetProps.background, 0)
-            targetRadial = radialGradientFromGradient(targetProps.background)
+            sourceLinear = linearGradientFromGradient(sourceColorSource, 0)
+            sourceRadial = radialGradientFromGradient(sourceColorSource)
+            targetLinear = linearGradientFromGradient(targetColorSource, 0)
+            targetRadial = radialGradientFromGradient(targetColorSource)
         }
     }
 
@@ -446,7 +545,10 @@ export const getBorderRadius = (style) => {
             typeof style[prop] === "string" ||
             (typeof style[prop] === "number" && !Number.isNaN(style[prop]))
         ) {
-            result[prop] = style[prop]
+            result[prop] =
+                typeof style[prop] === "number"
+                    ? `${style[prop]}px`
+                    : style[prop]
         }
     }
 
