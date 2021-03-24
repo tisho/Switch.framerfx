@@ -30,6 +30,7 @@ import {
 import { addAnimatableWrapperToNodeIfNeeded } from "./utils/addAnimatableWrapperToNodeIfNeeded"
 
 const motionSupportsLayoutProp = "AnimateLayoutFeature" in Framer
+const motionNeedsInitialVariant = !("createCrossfader" in Framer)
 
 const propsForPositionReset = {
     top: null,
@@ -394,6 +395,10 @@ const _AutoAnimatedState = ({
             ...enterTransitionProps,
         }
 
+        if (motionNeedsInitialVariant) {
+            enteringChildProps.initial = initialVariantName
+        }
+
         enteringChildProps = useAbsolutePositioning
             ? enteringChildProps
             : filterOutAbsolutePositioningProps(enteringChildProps)
@@ -417,9 +422,12 @@ const _AutoAnimatedState = ({
                 ...(source.props.variants || {}),
                 ...exitingChildVariants,
             },
-            initial: initialVariantName,
             animate: isRoot ? controls : undefined,
             ...exitTransitionProps,
+        }
+
+        if (motionNeedsInitialVariant) {
+            exitingChildProps.initial = initialVariantName
         }
 
         exitingChildProps = useAbsolutePositioning
@@ -478,16 +486,19 @@ const _AutoAnimatedState = ({
         },
         variants: {
             ...(target.props.variants || {}),
-            [initialVariantName]: initialVariant,
             [nextVariantName]: nextVariant,
         },
-        initial: initialVariantName,
         animate: isRoot ? controls : undefined,
         ...transitionPropsForElement({
             source,
             target,
             transition: "morph",
         }),
+    }
+
+    if (motionNeedsInitialVariant) {
+        transitionProps.initial = initialVariantName
+        transitionProps.variants[initialVariantName] = initialVariant
     }
 
     transitionProps =
