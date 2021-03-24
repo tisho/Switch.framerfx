@@ -8,26 +8,10 @@
 
 # Latest Release
 
-12/17/2020
+3/24/2021
 
--   FIX: Compatibility fixes for latest version of Framer that resolve issues
-    with animating border radii and gradient fills.
-
-10/30/2020
-
--   FIX: Fixed an issue where border radius wasn't being parsed correctly when using Auto Animate (Thanks, @astegmaier).
-
-10/07/2020
-
--   FIX: Fixed an issue that prevented Auto Animate from running on latest version of Framer Motion (Thanks, Victor).
-
-9/08/2020
-
--   FIX: Addressed compatibility issues with the version of Framer Motion 2 used in an upcoming release of Framer (Thanks @hemlok). **NOTE** If your prototype suddenly has glitchy/broken animations, you should update to this version (open the insert menu by pressing `I`, then go to the Switch package and wait for the "Update" button to show up). Let me know if you continue to have problems after.
-
-9/01/2020
-
--   FIX: Fixed an issue that could cause border radius properties to not be parsed correctly.
+-   FIX: Compatibility fixes for latest version of Framer Motion that broke Auto
+    Animate transitions
 
 **[→ See past releases](#past-releases)**
 
@@ -283,6 +267,27 @@ The `useSwitch` hook will return a controls object with the following functions:
     Registers a list of named states for a particular Switch identifier. For internal use only.
 
 # Past Releases
+
+12/17/2020
+
+-   FIX: Compatibility fixes for latest version of Framer that resolve issues
+    with animating border radii and gradient fills.
+
+10/30/2020
+
+-   FIX: Fixed an issue where border radius wasn't being parsed correctly when using Auto Animate (Thanks, @astegmaier).
+
+10/07/2020
+
+-   FIX: Fixed an issue that prevented Auto Animate from running on latest version of Framer Motion (Thanks, Victor).
+
+9/08/2020
+
+-   FIX: Addressed compatibility issues with the version of Framer Motion 2 used in an upcoming release of Framer (Thanks @hemlok). **NOTE** If your prototype suddenly has glitchy/broken animations, you should update to this version (open the insert menu by pressing `I`, then go to the Switch package and wait for the "Update" button to show up). Let me know if you continue to have problems after.
+
+9/01/2020
+
+-   FIX: Fixed an issue that could cause border radius properties to not be parsed correctly.
 
 7/17/2020
 
