@@ -655,8 +655,8 @@ const getPropTransitionsBetweenNodes = (
     const targetPositionAndSizeProps = getNodeRect(target, targetParentSize)
 
     const [
-        sourceBackgroundColor,
-        targetBackgroundColor,
+        sourceBackgroundProps,
+        targetBackgroundProps,
     ] = getBackgroundColorPair(source.props, target.props)
 
     const [sourceBoxShadow, targetBoxShadow] = getBoxShadowPair(
@@ -673,7 +673,7 @@ const getPropTransitionsBetweenNodes = (
         opacity: getOpacity(source.props.style),
         rotate: getRotate(source.props.style),
         ...getBorderRadius(source.props.style),
-        ...(sourceBackgroundColor && { background: sourceBackgroundColor }),
+        ...sourceBackgroundProps,
         boxShadow: sourceBoxShadow,
         ...sourceBorder,
     }
@@ -683,7 +683,7 @@ const getPropTransitionsBetweenNodes = (
         opacity: getOpacity(target.props.style),
         rotate: getRotate(target.props.style),
         ...getBorderRadius(target.props.style),
-        ...(targetBackgroundColor && { background: targetBackgroundColor }),
+        ...targetBackgroundProps,
         boxShadow: targetBoxShadow,
         ...targetBorder,
     }

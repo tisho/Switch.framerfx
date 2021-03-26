@@ -148,7 +148,7 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
     let targetRadial
 
     if (targetColorType === "image" || sourceColorType === "image") {
-        return [null, null]
+        return [undefined, undefined]
     }
 
     if (targetColorType === "none" || targetColorType === "plain") {
@@ -300,10 +300,17 @@ export const getBackgroundColorPair = (sourceProps, targetProps) => {
         }
     }
 
-    return [
-        `${sourceLinear}, ${sourceRadial}`,
-        `${targetLinear}, ${targetRadial}`,
-    ]
+    const sourceBackgroundProps = {
+        backgroundColor: "rgba(0, 0, 0, 0)",
+        backgroundImage: `${sourceLinear}, ${sourceRadial}`,
+    }
+
+    const targetBackgroundProps = {
+        backgroundColor: "rgba(0, 0, 0, 0)",
+        backgroundImage: `${targetLinear}, ${targetRadial}`,
+    }
+
+    return [sourceBackgroundProps, targetBackgroundProps]
 }
 
 export const isBackgroundTransitionAnimatable = (source, target) => {
