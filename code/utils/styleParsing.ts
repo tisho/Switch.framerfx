@@ -493,7 +493,10 @@ export const getBoxShadowPair = (sourceProps, targetProps) => {
     sourceShadows = [...sourceBoxShadows, ...sourceInnerShadows]
     targetShadows = [...targetBoxShadows, ...targetInnerShadows]
 
-    return [sourceShadows.join(", "), targetShadows.join(", ")]
+    const sourceShadowsStyle = sourceShadows.join(", ")
+    const targetShadowsStyle = targetShadows.join(", ")
+
+    return [sourceShadowsStyle, targetShadowsStyle]
 }
 
 export const getBoxShadow = (style) => {
@@ -576,18 +579,35 @@ export const getBorder = (border) => {
         Object.keys(border).length === 0
     ) {
         return {
-            borderWidth: "0px 0px 0px 0px",
+            borderLeftWidth: "0px",
+            borderTopWidth: "0px",
+            borderRightWidth: "0px",
+            borderBottomWidth: "0px",
             borderStyle: "solid",
             borderColor: "rgba(0, 0, 0, 0)",
         }
     }
 
     const rgbaColor = Color.toString(toColor(border.borderColor))
+    let borderLeftWidth
+    let borderTopWidth
+    let borderRightWidth
+    let borderBottomWidth
+
+    if (typeof border.borderWidth === "number") {
+        borderLeftWidth = borderTopWidth = borderRightWidth = borderBottomWidth = `${border.borderWidth}px`
+    } else {
+        borderLeftWidth = `${border.borderWidth.left}px`
+        borderTopWidth = `${border.borderWidth.top}px`
+        borderRightWidth = `${border.borderWidth.right}px`
+        borderBottomWidth = `${border.borderWidth.bottom}px`
+    }
+
     return {
-        borderWidth:
-            typeof border.borderWidth === "number"
-                ? `${border.borderWidth}px ${border.borderWidth}px ${border.borderWidth}px ${border.borderWidth}px`
-                : `${border.borderWidth.top}px ${border.borderWidth.right}px ${border.borderWidth.bottom}px ${border.borderWidth.left}px`,
+        borderLeftWidth,
+        borderTopWidth,
+        borderRightWidth,
+        borderBottomWidth,
         borderStyle: border.borderStyle,
         borderColor: rgbaColor,
     }
