@@ -8,6 +8,11 @@
 
 # Latest Release
 
+3/26/2021
+
+-   FIX: Compatibility fixes for latest version of Framer Motion that broke
+    certain gradient, border and cross-dissolve transitions
+
 3/24/2021
 
 -   FIX: Compatibility fixes for latest version of Framer Motion that broke Auto
