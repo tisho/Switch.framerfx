@@ -390,7 +390,6 @@ const _AutoAnimatedState = ({
                 ...(target.props.variants || {}),
                 ...enteringChildVariants,
             },
-            initial: initialVariantName,
             animate: isRoot ? controls : undefined,
             ...enterTransitionProps,
         }
